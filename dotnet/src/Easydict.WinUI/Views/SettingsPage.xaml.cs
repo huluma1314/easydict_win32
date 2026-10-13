@@ -1366,16 +1366,94 @@ public sealed partial class SettingsPage : Page
         var openVinoRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.OpenVINO);
 
         // Service configuration controls (API Keys, Endpoints, Models, etc.)
+        DeepLFreeCheck.Content = loc.GetString("DeepLFreeOption");
+        DeepLQualityCheck.Content = loc.GetString("DeepLQualityOption");
+        DeepLDescriptionText.Text = loc.GetString("DeepLDescription");
         UpdateDeepLApiKeyRequirementUi();
+        OpenAIKeyHeaderText.Text = loc.GetString("ApiKey");
+        OpenAIEndpointBox.Header = loc.GetString("EndpointOptional");
+        OpenAIModelCombo.Header = loc.GetString("Model");
+        DeepSeekKeyHeaderText.Text = loc.GetString("ApiKey");
+        DeepSeekModelCombo.Header = loc.GetString("Model");
+        RefreshDeepSeekModelsButton.Content = loc.GetString("Refresh");
+        GroqKeyHeaderText.Text = loc.GetString("ApiKey");
+        GroqModelCombo.Header = loc.GetString("Model");
+        ZhipuKeyHeaderText.Text = loc.GetString("ApiKey");
+        ZhipuModelCombo.Header = loc.GetString("Model");
+        RefreshZhipuModelsButton.Content = loc.GetString("Refresh");
+        KimiKeyHeaderText.Text = loc.GetString("ApiKey");
+        KimiModelCombo.Header = loc.GetString("Model");
+        RefreshKimiModelsButton.Content = loc.GetString("Refresh");
+        GitHubModelsTokenHeaderText.Text = loc.GetString("GitHubToken");
+        GitHubModelsModelCombo.Header = loc.GetString("Model");
+        GitHubModelsFreeModelsBadgeText.Text = loc.GetString("FreeModelsBadge");
+        GeminiKeyHeaderText.Text = loc.GetString("ApiKey");
+        GeminiModelCombo.Header = loc.GetString("Model");
         CustomOpenAIKeyHeaderText.Text = loc.GetString("ApiKeyOptional");
         CustomOpenAIEndpointBox.Header = loc.GetString("EndpointRequired");
         CustomOpenAIModelBox.Header = loc.GetString("Model");
+        OllamaEndpointBox.Header = loc.GetString("EndpointOptional");
+        OllamaModelCombo.Header = loc.GetString("Model");
+        OpenRouterKeyHeaderText.Text = loc.GetString("ApiKey");
+        OpenRouterModelCombo.Header = loc.GetString("Model");
+        OpenRouterDescriptionText.Text = loc.GetString("OpenRouterDescription");
+        OpenRouterFreeModelsBadgeText.Text = loc.GetString("FreeModelsBadge");
+        OpenRouterGetKeyLink.Content = loc.GetString("GetApiKeyLink");
+        OpenRouterGetKeyLink.NavigateUri = new Uri(OpenRouterService.SignUpUrl);
+        RefreshOpenRouterModelsButton.Content = loc.GetString("Refresh");
+        DoubaoKeyHeaderText.Text = loc.GetString("ApiKey");
+        DoubaoEndpointBox.Header = loc.GetString("EndpointOptional");
+        DoubaoModelBox.Header = loc.GetString("Model");
+        CaiyunKeyHeaderText.Text = loc.GetString("ApiKey");
+        NiuTransKeyHeaderText.Text = loc.GetString("ApiKey");
+        VolcanoAccessKeyIdHeaderText.Text = loc.GetString("VolcanoAccessKeyId");
+        VolcanoSecretAccessKeyHeaderText.Text = loc.GetString("VolcanoSecretAccessKey");
+        YoudaoAppKeyHeaderText.Text = loc.GetString("AppKey");
+        YoudaoAppSecretHeaderText.Text = loc.GetString("AppSecret");
+        YoudaoUseOfficialApiToggle.Header = loc.GetString("UseOfficialApi");
+        YoudaoUseOfficialApiToggle.OnContent = loc.GetString("OfficialApi");
+        YoudaoUseOfficialApiToggle.OffContent = loc.GetString("WebFree");
+        ClaudeCodeEnabledToggle.Header = loc.GetString("ClaudeCode_EnableToggle");
+        ClaudeCodeModelCombo.Header = loc.GetString("Model");
+        RefreshClaudeCodeModelsButton.Content = loc.GetString("Refresh");
+        ClaudeCodeExecutablePathBox.Header = loc.GetString("AgentCli_ExecutablePath");
+        ClaudeCodeExecutablePathBox.PlaceholderText = loc.GetString("AgentCli_AutomaticDiscovery");
+        BrowseClaudeCodeExecutableButton.Content = loc.GetString("Browse");
+        ClaudeCodeDescriptionText.Text = loc.GetString("ClaudeCode_Description");
+        ClaudeCodeInstallLink.Content = loc.GetString("AgentCli_InstallLinkText");
+        ClaudeCodeInstallLink.NavigateUri = new Uri(ClaudeCodeService.InstallDocumentationUrl);
+        CodexEnabledToggle.Header = loc.GetString("Codex_EnableToggle");
+        CodexModelCombo.Header = loc.GetString("Model");
+        CodexModelCombo.PlaceholderText = loc.GetString("Codex_ModelPlaceholder");
+        RefreshCodexModelsButton.Content = loc.GetString("Refresh");
+        CodexReasoningEffortCombo.Header = loc.GetString("Codex_ReasoningEffort");
+        CodexEffortDefaultItem.Content = loc.GetString("Codex_EffortDefault");
+        CodexDescriptionText.Text = loc.GetString("Codex_Description");
+        CodexInstallLink.Content = loc.GetString("AgentCli_InstallLinkText");
+        CodexInstallLink.NavigateUri = new Uri(CodexCliService.InstallDocumentationUrl);
 
         // Refresh button for Ollama
+        RefreshOllamaButton.Content = loc.GetString("Refresh");
 
         // Test buttons for all services
         var testButtonText = loc.GetString("Test");
+        TestDeepLButton.Content = testButtonText;
+        TestOpenAIButton.Content = testButtonText;
+        TestDeepSeekButton.Content = testButtonText;
+        TestGroqButton.Content = testButtonText;
+        TestZhipuButton.Content = testButtonText;
+        TestKimiButton.Content = testButtonText;
+        TestGitHubModelsButton.Content = testButtonText;
+        TestGeminiButton.Content = testButtonText;
         TestCustomOpenAIButton.Content = testButtonText;
+        TestOllamaButton.Content = testButtonText;
+        TestOpenRouterButton.Content = testButtonText;
+        TestDoubaoButton.Content = testButtonText;
+        TestCaiyunButton.Content = testButtonText;
+        TestNiuTransButton.Content = testButtonText;
+        TestVolcanoButton.Content = testButtonText;
+        TestClaudeCodeButton.Content = testButtonText;
+        TestCodexButton.Content = testButtonText;
 
         // Free Services section
         if (FreeServicesHeaderText != null)
@@ -1617,7 +1695,23 @@ public sealed partial class SettingsPage : Page
 
     private IEnumerable<Button> GetPasswordRevealButtons()
     {
+        yield return DeepLKeyRevealButton;
+        yield return OpenAIKeyRevealButton;
+        yield return DeepSeekKeyRevealButton;
+        yield return GroqKeyRevealButton;
+        yield return ZhipuKeyRevealButton;
+        yield return KimiKeyRevealButton;
+        yield return GitHubModelsTokenRevealButton;
+        yield return GeminiKeyRevealButton;
         yield return CustomOpenAIKeyRevealButton;
+        yield return OpenRouterKeyRevealButton;
+        yield return DoubaoKeyRevealButton;
+        yield return CaiyunKeyRevealButton;
+        yield return NiuTransKeyRevealButton;
+        yield return VolcanoAccessKeyIdRevealButton;
+        yield return VolcanoSecretAccessKeyRevealButton;
+        yield return YoudaoAppKeyRevealButton;
+        yield return YoudaoAppSecretRevealButton;
         yield return OcrApiKeyRevealButton;
     }
 
@@ -1738,10 +1832,30 @@ public sealed partial class SettingsPage : Page
 
     private string GetPasswordRevealSecretResourceKey(PasswordBox passwordBox)
     {
+        if (ReferenceEquals(passwordBox, GitHubModelsTokenBox))
+        {
+            return "GitHubToken";
+        }
 
+        if (ReferenceEquals(passwordBox, YoudaoAppKeyBox))
+        {
+            return "AppKey";
+        }
 
+        if (ReferenceEquals(passwordBox, YoudaoAppSecretBox))
+        {
+            return "AppSecret";
+        }
 
+        if (ReferenceEquals(passwordBox, VolcanoAccessKeyIdBox))
+        {
+            return "VolcanoAccessKeyId";
+        }
 
+        if (ReferenceEquals(passwordBox, VolcanoSecretAccessKeyBox))
+        {
+            return "VolcanoSecretAccessKey";
+        }
 
         if (ReferenceEquals(passwordBox, OcrApiKeyBox))
         {
@@ -2129,6 +2243,16 @@ public sealed partial class SettingsPage : Page
         // ComboBox changes
         FirstLanguageCombo.SelectionChanged += OnSettingChanged;
         SecondLanguageCombo.SelectionChanged += OnSettingChanged;
+        OpenAIModelCombo.SelectionChanged += OnSettingChanged;
+        OpenAIApiFormatCombo.SelectionChanged += OnOpenAIApiFormatChanged;
+        OllamaModelCombo.SelectionChanged += OnSettingChanged;
+        OpenRouterModelCombo.SelectionChanged += OnSettingChanged;
+        DeepSeekModelCombo.SelectionChanged += OnSettingChanged;
+        GroqModelCombo.SelectionChanged += OnSettingChanged;
+        ZhipuModelCombo.SelectionChanged += OnSettingChanged;
+        KimiModelCombo.SelectionChanged += OnSettingChanged;
+        GitHubModelsModelCombo.SelectionChanged += OnSettingChanged;
+        GeminiModelCombo.SelectionChanged += OnSettingChanged;
 
         // ToggleSwitch changes
         AutoSelectTargetToggle.Toggled += OnSettingChanged;
@@ -2163,6 +2287,10 @@ public sealed partial class SettingsPage : Page
         TtsVoiceCombo.SelectionChanged += OnTtsVoiceSelectionChanged;
 
         // TextBox/PasswordBox changes - existing
+        DeepLKeyBox.PasswordChanged += OnSettingChanged;
+        OpenAIKeyBox.PasswordChanged += OnSettingChanged;
+        OpenAIEndpointBox.TextChanged += OnSettingChanged;
+        OllamaEndpointBox.TextChanged += OnSettingChanged;
         ProxyUriBox.TextChanged += OnSettingChanged;
         ShowHotkeyBox.TextChanged += OnSettingChanged;
         TranslateHotkeyBox.TextChanged += OnSettingChanged;
@@ -2184,15 +2312,46 @@ public sealed partial class SettingsPage : Page
         OcrEnableThinkingToggle.Toggled += OnSettingChanged;
 
         // TextBox/PasswordBox changes - new services
+        DeepSeekKeyBox.PasswordChanged += OnSettingChanged;
+        GroqKeyBox.PasswordChanged += OnSettingChanged;
+        ZhipuKeyBox.PasswordChanged += OnSettingChanged;
+        KimiKeyBox.PasswordChanged += OnSettingChanged;
+        GitHubModelsTokenBox.PasswordChanged += OnSettingChanged;
+        GeminiKeyBox.PasswordChanged += OnSettingChanged;
         CustomOpenAIEndpointBox.TextChanged += OnSettingChanged;
         CustomOpenAIKeyBox.PasswordChanged += OnSettingChanged;
         CustomOpenAIModelBox.TextChanged += OnSettingChanged;
+        OpenRouterKeyBox.PasswordChanged += OnSettingChanged;
+        DoubaoKeyBox.PasswordChanged += OnSettingChanged;
+        DoubaoEndpointBox.TextChanged += OnSettingChanged;
+        DoubaoModelBox.TextChanged += OnSettingChanged;
+        CaiyunKeyBox.PasswordChanged += OnSettingChanged;
+        NiuTransKeyBox.PasswordChanged += OnSettingChanged;
+        VolcanoAccessKeyIdBox.PasswordChanged += OnSettingChanged;
+        VolcanoSecretAccessKeyBox.PasswordChanged += OnSettingChanged;
+        YoudaoAppKeyBox.PasswordChanged += OnSettingChanged;
+        YoudaoAppSecretBox.PasswordChanged += OnSettingChanged;
+        YoudaoUseOfficialApiToggle.Toggled += OnSettingChanged;
 
         // Agent CLI services (Claude Code / Codex)
+        ClaudeCodeEnabledToggle.Toggled += OnSettingChanged;
+        ClaudeCodeEnabledToggle.Toggled += OnAgentCliEnabledToggled;
+        ClaudeCodeModelCombo.SelectionChanged += OnSettingChanged;
+        ClaudeCodeModelCombo.LostFocus += OnSettingChanged;
+        ClaudeCodeExecutablePathBox.TextChanged += OnSettingChanged;
+        CodexEnabledToggle.Toggled += OnSettingChanged;
+        CodexEnabledToggle.Toggled += OnAgentCliEnabledToggled;
+        CodexModelCombo.SelectionChanged += OnSettingChanged;
+        CodexModelCombo.LostFocus += OnSettingChanged;
+        CodexReasoningEffortCombo.SelectionChanged += OnSettingChanged;
 
         // Layout detection changes
 
         // CheckBox changes
+        DeepLFreeCheck.Checked += OnDeepLModeChanged;
+        DeepLFreeCheck.Unchecked += OnDeepLModeChanged;
+        DeepLQualityCheck.Checked += OnDeepLModeChanged;
+        DeepLQualityCheck.Unchecked += OnDeepLModeChanged;
 
         // Service selection changes (via PropertyChanged on ServiceCheckItem)
         RegisterServiceCollectionHandlers(_mainWindowServices);
@@ -2210,6 +2369,16 @@ public sealed partial class SettingsPage : Page
 
         FirstLanguageCombo.SelectionChanged -= OnSettingChanged;
         SecondLanguageCombo.SelectionChanged -= OnSettingChanged;
+        OpenAIModelCombo.SelectionChanged -= OnSettingChanged;
+        OpenAIApiFormatCombo.SelectionChanged -= OnOpenAIApiFormatChanged;
+        OllamaModelCombo.SelectionChanged -= OnSettingChanged;
+        OpenRouterModelCombo.SelectionChanged -= OnSettingChanged;
+        DeepSeekModelCombo.SelectionChanged -= OnSettingChanged;
+        GroqModelCombo.SelectionChanged -= OnSettingChanged;
+        ZhipuModelCombo.SelectionChanged -= OnSettingChanged;
+        KimiModelCombo.SelectionChanged -= OnSettingChanged;
+        GitHubModelsModelCombo.SelectionChanged -= OnSettingChanged;
+        GeminiModelCombo.SelectionChanged -= OnSettingChanged;
 
         AutoSelectTargetToggle.Toggled -= OnSettingChanged;
         MinimizeToTrayToggle.Toggled -= OnSettingChanged;
@@ -2242,6 +2411,10 @@ public sealed partial class SettingsPage : Page
         AutoPlayTranslationToggle.Toggled -= OnSettingChanged;
         TtsVoiceCombo.SelectionChanged -= OnTtsVoiceSelectionChanged;
 
+        DeepLKeyBox.PasswordChanged -= OnSettingChanged;
+        OpenAIKeyBox.PasswordChanged -= OnSettingChanged;
+        OpenAIEndpointBox.TextChanged -= OnSettingChanged;
+        OllamaEndpointBox.TextChanged -= OnSettingChanged;
         ProxyUriBox.TextChanged -= OnSettingChanged;
         ShowHotkeyBox.TextChanged -= OnSettingChanged;
         TranslateHotkeyBox.TextChanged -= OnSettingChanged;
@@ -2262,12 +2435,43 @@ public sealed partial class SettingsPage : Page
         OcrSystemPromptBox.TextChanged -= OnSettingChanged;
         OcrEnableThinkingToggle.Toggled -= OnSettingChanged;
 
+        DeepSeekKeyBox.PasswordChanged -= OnSettingChanged;
+        GroqKeyBox.PasswordChanged -= OnSettingChanged;
+        ZhipuKeyBox.PasswordChanged -= OnSettingChanged;
+        KimiKeyBox.PasswordChanged -= OnSettingChanged;
+        GitHubModelsTokenBox.PasswordChanged -= OnSettingChanged;
+        GeminiKeyBox.PasswordChanged -= OnSettingChanged;
         CustomOpenAIEndpointBox.TextChanged -= OnSettingChanged;
         CustomOpenAIKeyBox.PasswordChanged -= OnSettingChanged;
         CustomOpenAIModelBox.TextChanged -= OnSettingChanged;
+        OpenRouterKeyBox.PasswordChanged -= OnSettingChanged;
+        DoubaoKeyBox.PasswordChanged -= OnSettingChanged;
+        DoubaoEndpointBox.TextChanged -= OnSettingChanged;
+        DoubaoModelBox.TextChanged -= OnSettingChanged;
+        CaiyunKeyBox.PasswordChanged -= OnSettingChanged;
+        NiuTransKeyBox.PasswordChanged -= OnSettingChanged;
+        VolcanoAccessKeyIdBox.PasswordChanged -= OnSettingChanged;
+        VolcanoSecretAccessKeyBox.PasswordChanged -= OnSettingChanged;
+        YoudaoAppKeyBox.PasswordChanged -= OnSettingChanged;
+        YoudaoAppSecretBox.PasswordChanged -= OnSettingChanged;
+        YoudaoUseOfficialApiToggle.Toggled -= OnSettingChanged;
+
+        ClaudeCodeEnabledToggle.Toggled -= OnSettingChanged;
+        ClaudeCodeEnabledToggle.Toggled -= OnAgentCliEnabledToggled;
+        ClaudeCodeModelCombo.SelectionChanged -= OnSettingChanged;
+        ClaudeCodeModelCombo.LostFocus -= OnSettingChanged;
+        ClaudeCodeExecutablePathBox.TextChanged -= OnSettingChanged;
+        CodexEnabledToggle.Toggled -= OnSettingChanged;
+        CodexEnabledToggle.Toggled -= OnAgentCliEnabledToggled;
+        CodexModelCombo.SelectionChanged -= OnSettingChanged;
+        CodexModelCombo.LostFocus -= OnSettingChanged;
+        CodexReasoningEffortCombo.SelectionChanged -= OnSettingChanged;
 
 
-
+        DeepLFreeCheck.Checked -= OnDeepLModeChanged;
+        DeepLFreeCheck.Unchecked -= OnDeepLModeChanged;
+        DeepLQualityCheck.Checked -= OnDeepLModeChanged;
+        DeepLQualityCheck.Unchecked -= OnDeepLModeChanged;
 
         UnregisterServiceCollectionHandlers(_mainWindowServices);
         UnregisterServiceCollectionHandlers(_miniWindowServices);
@@ -2553,8 +2757,57 @@ public sealed partial class SettingsPage : Page
 
     private bool ServicesTabSettingsDifferFromSettings()
     {
+        var openAIEndpoint = OpenAIEndpointBox.Text?.Trim();
         var customModel = CustomOpenAIModelBox.Text?.Trim();
+        var ollamaEndpoint = OllamaEndpointBox.Text?.Trim();
+        var doubaoEndpoint = DoubaoEndpointBox.Text?.Trim();
+        var doubaoModel = DoubaoModelBox.Text?.Trim();
 
+        return EnableInternationalServicesToggle.IsOn != _settings.EnableInternationalServices
+            || !SameSecret(DeepLKeyBox.Password, _settings.DeepLApiKey)
+            || (DeepLFreeCheck.IsChecked ?? true) != _settings.DeepLUseFreeApi
+            || (DeepLQualityCheck.IsChecked ?? false) != _settings.DeepLUseQualityOptimized
+            || !SameSecret(OpenAIKeyBox.Password, _settings.OpenAIApiKey)
+            || !SameSetting(string.IsNullOrWhiteSpace(openAIEndpoint) ? OpenAIService.DefaultEndpoint : openAIEndpoint, _settings.OpenAIEndpoint)
+            || !SameSetting(GetTagComboValue(OpenAIApiFormatCombo, "Auto"), string.IsNullOrEmpty(_settings.OpenAIApiFormatOverride) ? "Auto" : _settings.OpenAIApiFormatOverride)
+            || !SameSetting(GetEditableComboValue(OpenAIModelCombo, OpenAIService.DefaultModel), _settings.OpenAIModel)
+            || !SameSecret(DeepSeekKeyBox.Password, _settings.DeepSeekApiKey)
+            || !SameSetting(GetEditableComboValue(DeepSeekModelCombo, "deepseek-chat"), _settings.DeepSeekModel)
+            || !SameSecret(GroqKeyBox.Password, _settings.GroqApiKey)
+            || !SameSetting(GetEditableComboValue(GroqModelCombo, "llama-3.3-70b-versatile"), _settings.GroqModel)
+            || !SameSecret(ZhipuKeyBox.Password, _settings.ZhipuApiKey)
+            || !SameSetting(GetEditableComboValue(ZhipuModelCombo, "glm-4.5-flash"), _settings.ZhipuModel)
+            || !SameSecret(KimiKeyBox.Password, _settings.KimiApiKey)
+            || !SameSetting(GetEditableComboValue(KimiModelCombo, "kimi-k2-turbo-preview"), _settings.KimiModel)
+            || !SameSecret(GitHubModelsTokenBox.Password, _settings.GitHubModelsToken)
+            || !SameSetting(GetEditableComboValue(GitHubModelsModelCombo, "gpt-4.1"), _settings.GitHubModelsModel)
+            || !SameSecret(GeminiKeyBox.Password, _settings.GeminiApiKey)
+            || !SameSetting(GetEditableComboValue(GeminiModelCombo, "gemini-2.5-flash"), _settings.GeminiModel)
+            || !SameSetting(CustomOpenAIEndpointBox.Text?.Trim() ?? "", _settings.CustomOpenAIEndpoint)
+            || !SameSecret(CustomOpenAIKeyBox.Password, _settings.CustomOpenAIApiKey)
+            || !SameSetting(string.IsNullOrWhiteSpace(customModel) ? "gpt-3.5-turbo" : customModel, _settings.CustomOpenAIModel)
+            || !SameSetting(string.IsNullOrWhiteSpace(ollamaEndpoint) ? "http://localhost:11434/v1/chat/completions" : ollamaEndpoint, _settings.OllamaEndpoint)
+            || !SameSetting(OllamaModelCombo.Text?.Trim() ?? "llama3.2", _settings.OllamaModel)
+            || !SameSetting(GetEditableComboValue(OpenRouterModelCombo, "openrouter/free"), _settings.OpenRouterModel)
+            || !SameSecret(OpenRouterKeyBox.Password, _settings.OpenRouterApiKey)
+            || !SameSecret(DoubaoKeyBox.Password, _settings.DoubaoApiKey)
+            || !SameSetting(string.IsNullOrWhiteSpace(doubaoEndpoint) ? "https://ark.cn-beijing.volces.com/api/v3/responses" : doubaoEndpoint, _settings.DoubaoEndpoint)
+            || !SameSetting(string.IsNullOrWhiteSpace(doubaoModel) ? "doubao-seed-translation-250915" : doubaoModel, _settings.DoubaoModel)
+            || !SameSecret(CaiyunKeyBox.Password, _settings.CaiyunApiKey)
+            || !SameSecret(NiuTransKeyBox.Password, _settings.NiuTransApiKey)
+            || !SameSecret(VolcanoAccessKeyIdBox.Password, _settings.VolcanoAccessKeyId)
+            || !SameSecret(VolcanoSecretAccessKeyBox.Password, _settings.VolcanoSecretAccessKey)
+            || !SameSecret(YoudaoAppKeyBox.Password, _settings.YoudaoAppKey)
+            || !SameSecret(YoudaoAppSecretBox.Password, _settings.YoudaoAppSecret)
+            || YoudaoUseOfficialApiToggle.IsOn != _settings.YoudaoUseOfficialApi
+            || ClaudeCodeEnabledToggle.IsOn != _settings.ClaudeCodeEnabled
+            || !SameSetting(GetEditableComboValue(ClaudeCodeModelCombo, ClaudeCodeService.DefaultModel), _settings.ClaudeCodeModel)
+            || !SameSetting(ClaudeCodeExecutablePathBox.Text?.Trim() ?? "", _settings.ClaudeCodeExecutablePath)
+            || CodexEnabledToggle.IsOn != _settings.CodexEnabled
+            || !SameSetting(GetEditableComboValue(CodexModelCombo, CodexCliService.DefaultModel), _settings.CodexModel)
+            || !SameSetting(
+                GetTagComboValue(CodexReasoningEffortCombo, CodexCliService.DefaultReasoningEffort),
+                _settings.CodexReasoningEffort);
     }
 
     private bool GeneralTabSettingsDifferFromSettings()
@@ -2696,16 +2949,33 @@ public sealed partial class SettingsPage : Page
 
     private void ApplyDeepLModeMutualExclusion()
     {
+        var useQualityOptimized = DeepLQualityCheck.IsChecked == true;
+        if (useQualityOptimized && DeepLFreeCheck.IsChecked == true)
+        {
+            // Suppress re-entry into OnDeepLModeChanged from the IsChecked mutation;
+            // we'll call OnSettingChanged once from the outer handler.
+            var wasLoading = _isLoading;
+            _isLoading = true;
+            try { DeepLFreeCheck.IsChecked = false; }
+            finally { _isLoading = wasLoading; }
+        }
 
+        DeepLFreeCheck.IsEnabled = !useQualityOptimized;
         UpdateDeepLApiKeyRequirementUi();
     }
 
     private void UpdateDeepLApiKeyRequirementUi()
     {
+        DeepLKeyHeaderText.Text = LocalizationService.Instance.GetString(
+            DeepLQualityCheck.IsChecked == true ? "ApiKey" : "ApiKeyOptional");
     }
 
     private async Task<bool> ValidateDeepLQualityApiKeyAsync(string titleKey)
     {
+        if (DeepLQualityCheck.IsChecked != true || !string.IsNullOrWhiteSpace(DeepLKeyBox.Password))
+        {
+            return true;
+        }
 
         var loc = LocalizationService.Instance;
         var message = loc.GetString("DeepLQualityApiKeyRequiredMessage");
@@ -2728,21 +2998,40 @@ public sealed partial class SettingsPage : Page
             EnableInternationalServicesToggle.IsOn = _settings.EnableInternationalServices;
 
             // DeepL settings (SettingsService normalizes on Load: Quality => !Free)
+            DeepLKeyBox.Password = _settings.DeepLApiKey ?? string.Empty;
+            DeepLFreeCheck.IsChecked = _settings.DeepLUseFreeApi;
+            DeepLQualityCheck.IsChecked = _settings.DeepLUseQualityOptimized;
             ApplyDeepLModeMutualExclusion();
 
             // OpenAI settings
+            OpenAIKeyBox.Password = _settings.OpenAIApiKey ?? string.Empty;
+            OpenAIEndpointBox.Text = _settings.OpenAIEndpoint;
+            SetTagComboValue(OpenAIApiFormatCombo, _settings.OpenAIApiFormatOverride, "Auto");
+            SetEditableComboValue(OpenAIModelCombo, _settings.OpenAIModel);
 
             // DeepSeek settings
+            DeepSeekKeyBox.Password = _settings.DeepSeekApiKey ?? string.Empty;
+            SetEditableComboValue(DeepSeekModelCombo, _settings.DeepSeekModel);
 
             // Groq settings
+            GroqKeyBox.Password = _settings.GroqApiKey ?? string.Empty;
+            SetEditableComboValue(GroqModelCombo, _settings.GroqModel);
 
             // Zhipu settings
+            ZhipuKeyBox.Password = _settings.ZhipuApiKey ?? string.Empty;
+            SetEditableComboValue(ZhipuModelCombo, _settings.ZhipuModel);
 
             // Kimi settings
+            KimiKeyBox.Password = _settings.KimiApiKey ?? string.Empty;
+            SetEditableComboValue(KimiModelCombo, _settings.KimiModel);
 
             // GitHub Models settings
+            GitHubModelsTokenBox.Password = _settings.GitHubModelsToken ?? string.Empty;
+            SetEditableComboValue(GitHubModelsModelCombo, _settings.GitHubModelsModel);
 
             // Gemini settings
+            GeminiKeyBox.Password = _settings.GeminiApiKey ?? string.Empty;
+            SetEditableComboValue(GeminiModelCombo, _settings.GeminiModel);
 
             // Custom OpenAI settings
             CustomOpenAIEndpointBox.Text = _settings.CustomOpenAIEndpoint;
@@ -2750,24 +3039,47 @@ public sealed partial class SettingsPage : Page
             CustomOpenAIModelBox.Text = _settings.CustomOpenAIModel;
 
             // Ollama settings
+            OllamaEndpointBox.Text = _settings.OllamaEndpoint;
+            OllamaModelCombo.Text = _settings.OllamaModel;
 
             // Foundry Local settings
 
             // OpenRouter settings
+            SetEditableComboValue(OpenRouterModelCombo, _settings.OpenRouterModel);
+            OpenRouterKeyBox.Password = _settings.OpenRouterApiKey ?? string.Empty;
 
             // OrcaRouter settings
 
             // Doubao settings
+            DoubaoKeyBox.Password = _settings.DoubaoApiKey ?? string.Empty;
+            DoubaoEndpointBox.Text = _settings.DoubaoEndpoint;
+            DoubaoModelBox.Text = _settings.DoubaoModel;
 
             // Caiyun settings
+            CaiyunKeyBox.Password = _settings.CaiyunApiKey ?? string.Empty;
 
             // NiuTrans settings
+            NiuTransKeyBox.Password = _settings.NiuTransApiKey ?? string.Empty;
 
             // Volcano settings
+            VolcanoAccessKeyIdBox.Password = _settings.VolcanoAccessKeyId ?? string.Empty;
+            VolcanoSecretAccessKeyBox.Password = _settings.VolcanoSecretAccessKey ?? string.Empty;
 
             // Youdao settings
+            YoudaoAppKeyBox.Password = _settings.YoudaoAppKey ?? string.Empty;
+            YoudaoAppSecretBox.Password = _settings.YoudaoAppSecret ?? string.Empty;
+            YoudaoUseOfficialApiToggle.IsOn = _settings.YoudaoUseOfficialApi;
 
             // Agent CLI settings (Claude Code / Codex)
+            ClaudeCodeEnabledToggle.IsOn = _settings.ClaudeCodeEnabled;
+            SetEditableComboValue(ClaudeCodeModelCombo, _settings.ClaudeCodeModel);
+            ClaudeCodeExecutablePathBox.Text = _settings.ClaudeCodeExecutablePath;
+            CodexEnabledToggle.IsOn = _settings.CodexEnabled;
+            SetEditableComboValue(CodexModelCombo, _settings.CodexModel);
+            SetTagComboValue(
+                CodexReasoningEffortCombo,
+                _settings.CodexReasoningEffort,
+                CodexCliService.DefaultReasoningEffort);
 
             // Restore test status indicators
             RestoreTestStatusIndicators();
@@ -4047,20 +4359,50 @@ public sealed partial class SettingsPage : Page
             .ToList();
 
         // Save DeepL settings (SettingsService.Save normalizes: Quality => !Free)
+        var deepLKey = DeepLKeyBox.Password;
+        _settings.DeepLApiKey = string.IsNullOrWhiteSpace(deepLKey) ? null : deepLKey;
+        _settings.DeepLUseFreeApi = DeepLFreeCheck.IsChecked ?? true;
+        _settings.DeepLUseQualityOptimized = DeepLQualityCheck.IsChecked ?? false;
 
         // Save OpenAI settings
+        var openAIKey = OpenAIKeyBox.Password;
+        _settings.OpenAIApiKey = string.IsNullOrWhiteSpace(openAIKey) ? null : openAIKey;
+        var openAIEndpoint = OpenAIEndpointBox.Text?.Trim();
+        _settings.OpenAIEndpoint = string.IsNullOrWhiteSpace(openAIEndpoint)
+            ? OpenAIService.DefaultEndpoint
+            : openAIEndpoint;
+        _settings.OpenAIApiFormatOverride = GetTagComboValue(OpenAIApiFormatCombo, "Auto");
+        _settings.OpenAIModel = GetEditableComboValue(OpenAIModelCombo, OpenAIService.DefaultModel);
 
         // Save DeepSeek settings
+        var deepSeekKey = DeepSeekKeyBox.Password;
+        _settings.DeepSeekApiKey = string.IsNullOrWhiteSpace(deepSeekKey) ? null : deepSeekKey;
+        _settings.DeepSeekModel = GetEditableComboValue(DeepSeekModelCombo, "deepseek-chat");
 
         // Save Groq settings
+        var groqKey = GroqKeyBox.Password;
+        _settings.GroqApiKey = string.IsNullOrWhiteSpace(groqKey) ? null : groqKey;
+        _settings.GroqModel = GetEditableComboValue(GroqModelCombo, "llama-3.3-70b-versatile");
 
         // Save Zhipu settings
+        var zhipuKey = ZhipuKeyBox.Password;
+        _settings.ZhipuApiKey = string.IsNullOrWhiteSpace(zhipuKey) ? null : zhipuKey;
+        _settings.ZhipuModel = GetEditableComboValue(ZhipuModelCombo, "glm-4.5-flash");
 
         // Save Kimi settings
+        var kimiKey = KimiKeyBox.Password;
+        _settings.KimiApiKey = string.IsNullOrWhiteSpace(kimiKey) ? null : kimiKey;
+        _settings.KimiModel = GetEditableComboValue(KimiModelCombo, "kimi-k2-turbo-preview");
 
         // Save GitHub Models settings
+        var githubToken = GitHubModelsTokenBox.Password;
+        _settings.GitHubModelsToken = string.IsNullOrWhiteSpace(githubToken) ? null : githubToken;
+        _settings.GitHubModelsModel = GetEditableComboValue(GitHubModelsModelCombo, "gpt-4.1");
 
         // Save Gemini settings
+        var geminiKey = GeminiKeyBox.Password;
+        _settings.GeminiApiKey = string.IsNullOrWhiteSpace(geminiKey) ? null : geminiKey;
+        _settings.GeminiModel = GetEditableComboValue(GeminiModelCombo, "gemini-2.5-flash");
 
         // Save Custom OpenAI settings
         var customEndpoint = CustomOpenAIEndpointBox.Text?.Trim() ?? "";
@@ -4071,6 +4413,11 @@ public sealed partial class SettingsPage : Page
         _settings.CustomOpenAIModel = string.IsNullOrWhiteSpace(customModel) ? "gpt-3.5-turbo" : customModel;
 
         // Save Ollama settings
+        var ollamaEndpoint = OllamaEndpointBox.Text?.Trim();
+        _settings.OllamaEndpoint = string.IsNullOrWhiteSpace(ollamaEndpoint)
+            ? "http://localhost:11434/v1/chat/completions"
+            : ollamaEndpoint;
+        _settings.OllamaModel = OllamaModelCombo.Text?.Trim() ?? "llama3.2";
 
         // Save OCR Engine settings
         var ocrOptions = GetCurrentOcrServiceOptions();
@@ -4085,19 +4432,53 @@ public sealed partial class SettingsPage : Page
         _settings.OcrEnableThinking = ocrOptions.EnableThinking;
 
         // Save OpenRouter settings
+        _settings.OpenRouterModel = GetEditableComboValue(OpenRouterModelCombo, "openrouter/free");
+        var openRouterKey = OpenRouterKeyBox.Password;
+        _settings.OpenRouterApiKey = string.IsNullOrWhiteSpace(openRouterKey) ? null : openRouterKey;
 
 
         // Save Doubao settings
+        var doubaoKey = DoubaoKeyBox.Password;
+        _settings.DoubaoApiKey = string.IsNullOrWhiteSpace(doubaoKey) ? null : doubaoKey;
+        var doubaoEndpoint = DoubaoEndpointBox.Text?.Trim();
+        _settings.DoubaoEndpoint = string.IsNullOrWhiteSpace(doubaoEndpoint)
+            ? "https://ark.cn-beijing.volces.com/api/v3/responses"
+            : doubaoEndpoint;
+        var doubaoModel = DoubaoModelBox.Text?.Trim();
+        _settings.DoubaoModel = string.IsNullOrWhiteSpace(doubaoModel)
+            ? "doubao-seed-translation-250915"
+            : doubaoModel;
 
         // Save Caiyun settings
+        var caiyunKey = CaiyunKeyBox.Password;
+        _settings.CaiyunApiKey = string.IsNullOrWhiteSpace(caiyunKey) ? null : caiyunKey;
 
         // Save NiuTrans settings
+        var niutransKey = NiuTransKeyBox.Password;
+        _settings.NiuTransApiKey = string.IsNullOrWhiteSpace(niutransKey) ? null : niutransKey;
 
         // Save Volcano settings
+        var volcanoAccessKeyId = VolcanoAccessKeyIdBox.Password;
+        _settings.VolcanoAccessKeyId = string.IsNullOrWhiteSpace(volcanoAccessKeyId) ? null : volcanoAccessKeyId;
+        var volcanoSecretAccessKey = VolcanoSecretAccessKeyBox.Password;
+        _settings.VolcanoSecretAccessKey = string.IsNullOrWhiteSpace(volcanoSecretAccessKey) ? null : volcanoSecretAccessKey;
 
         // Save Youdao settings
+        var youdaoAppKey = YoudaoAppKeyBox.Password;
+        _settings.YoudaoAppKey = string.IsNullOrWhiteSpace(youdaoAppKey) ? null : youdaoAppKey;
+        var youdaoAppSecret = YoudaoAppSecretBox.Password;
+        _settings.YoudaoAppSecret = string.IsNullOrWhiteSpace(youdaoAppSecret) ? null : youdaoAppSecret;
+        _settings.YoudaoUseOfficialApi = YoudaoUseOfficialApiToggle.IsOn;
 
         // Save Agent CLI settings (Claude Code / Codex)
+        _settings.ClaudeCodeEnabled = ClaudeCodeEnabledToggle.IsOn;
+        _settings.ClaudeCodeModel = GetEditableComboValue(ClaudeCodeModelCombo, ClaudeCodeService.DefaultModel);
+        _settings.ClaudeCodeExecutablePath = ClaudeCodeExecutablePathBox.Text?.Trim() ?? "";
+        _settings.CodexEnabled = CodexEnabledToggle.IsOn;
+        _settings.CodexModel = GetEditableComboValue(CodexModelCombo, CodexCliService.DefaultModel);
+        _settings.CodexReasoningEffort = GetTagComboValue(
+            CodexReasoningEffortCombo,
+            CodexCliService.DefaultReasoningEffort);
 
         // Save encrypted MDX dictionary credentials from dynamic UI
         SaveEncryptedMdxCredentials();
@@ -4654,6 +5035,53 @@ public sealed partial class SettingsPage : Page
     /// <summary>
     /// Refreshes the available Ollama models from the local server.
     /// </summary>
+    private async void OnRefreshOllamaModels(object sender, RoutedEventArgs e)
+    {
+        RefreshOllamaButton.IsEnabled = false;
+        try
+        {
+            // Extract base URL from endpoint
+            var endpoint = OllamaEndpointBox.Text?.Trim() ?? "http://localhost:11434/v1/chat/completions";
+            if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var uri))
+            {
+                uri = new Uri("http://localhost:11434");
+            }
+            var baseUrl = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
+            var tagsUrl = $"{baseUrl}/api/tags";
+
+            using var httpClient = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+            var response = await httpClient.GetStringAsync(tagsUrl);
+
+            // Parse JSON response: {"models": [{"name": "llama3.2"}, ...]}
+            using var doc = JsonDocument.Parse(response);
+            if (doc.RootElement.TryGetProperty("models", out var models))
+            {
+                var currentSelection = OllamaModelCombo.Text;
+                OllamaModelCombo.Items.Clear();
+
+                foreach (var model in models.EnumerateArray())
+                {
+                    if (model.TryGetProperty("name", out var nameElement))
+                    {
+                        var name = nameElement.GetString();
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            OllamaModelCombo.Items.Add(new ComboBoxItem { Content = name, Tag = name });
+                        }
+                    }
+                }
+
+                // Restore selection or select first item
+                if (!string.IsNullOrEmpty(currentSelection))
+                {
+                    OllamaModelCombo.Text = currentSelection;
+                }
+                else if (OllamaModelCombo.Items.Count > 0)
+                {
+                    OllamaModelCombo.SelectedIndex = 0;
+                }
+            }
+        }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[Settings] Failed to refresh Ollama models: {ex.Message}");
@@ -4669,6 +5097,7 @@ public sealed partial class SettingsPage : Page
         }
         finally
         {
+            RefreshOllamaButton.IsEnabled = true;
         }
     }
 
@@ -4997,13 +5426,47 @@ public sealed partial class SettingsPage : Page
         {
             if (service is DeepLService deepl)
             {
+                var apiKey = DeepLKeyBox.Password;
+                deepl.Configure(
+                    string.IsNullOrWhiteSpace(apiKey) ? null : apiKey,
+                    useWebFirst: DeepLFreeCheck.IsChecked ?? true,
+                    useQualityOptimized: DeepLQualityCheck.IsChecked ?? false);
             }
-        });
+        }, TestDeepLButton, DeepLStatusText);
     }
 
     /// <summary>
     /// Test OpenAI configuration.
     /// </summary>
+    private async void OnTestOpenAI(object sender, RoutedEventArgs e)
+    {
+        var formatTag = GetTagComboValue(OpenAIApiFormatCombo, "Auto");
+        var formatOverride = Enum.TryParse<OpenAIApiFormat>(formatTag, ignoreCase: true, out var f)
+            ? f
+            : OpenAIApiFormat.Auto;
+
+        await TestServiceAsync("openai", service =>
+        {
+            if (service is OpenAIService openai)
+            {
+                var apiKey = OpenAIKeyBox.Password;
+                var endpoint = OpenAIEndpointBox.Text?.Trim();
+                var model = GetEditableComboValue(OpenAIModelCombo, OpenAIService.DefaultModel);
+
+                openai.Configure(
+                    string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey,
+                    string.IsNullOrWhiteSpace(endpoint) ? OpenAIService.DefaultEndpoint : endpoint,
+                    model,
+                    formatOverride: formatOverride);
+            }
+        }, TestOpenAIButton, OpenAIStatusText, onSuccess: service =>
+        {
+            if (service is OpenAIService openai && formatOverride == OpenAIApiFormat.Auto)
+            {
+                UpdateOpenAIDetectedFormatText(openai.DetectedFormat);
+            }
+        });
+    }
 
     /// <summary>
     /// Show or hide the "Detected: X" hint under the API Format combo based on
@@ -5014,9 +5477,11 @@ public sealed partial class SettingsPage : Page
     {
         OnSettingChanged(sender, e);
 
+        var tag = GetTagComboValue(OpenAIApiFormatCombo, "Auto");
         if (!string.Equals(tag, "Auto", StringComparison.OrdinalIgnoreCase))
         {
             // Pinned modes: format is explicit, no detection result to surface.
+            OpenAIDetectedFormatText.Visibility = Visibility.Collapsed;
         }
         // In Auto mode the label stays whatever it was — it's populated by a
         // successful test in OnTestOpenAI.
@@ -5026,12 +5491,15 @@ public sealed partial class SettingsPage : Page
     {
         if (detected == OpenAIApiFormat.Auto)
         {
+            OpenAIDetectedFormatText.Visibility = Visibility.Collapsed;
             return;
         }
 
         var label = detected == OpenAIApiFormat.Responses
             ? "Responses API"
             : "Chat Completions API";
+        OpenAIDetectedFormatText.Text = $"Detected: {label}";
+        OpenAIDetectedFormatText.Visibility = Visibility.Visible;
     }
 
     /// <summary>
@@ -5043,9 +5511,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is DeepSeekService deepseek)
             {
+                var apiKey = DeepSeekKeyBox.Password;
+                var model = GetEditableComboValue(DeepSeekModelCombo, "deepseek-chat");
                 deepseek.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
             }
-        });
+        }, TestDeepSeekButton, DeepSeekStatusText);
     }
 
     /// <summary>
@@ -5057,9 +5527,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is GroqService groq)
             {
+                var apiKey = GroqKeyBox.Password;
+                var model = GetEditableComboValue(GroqModelCombo, "llama-3.3-70b-versatile");
                 groq.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
             }
-        });
+        }, TestGroqButton, GroqStatusText);
     }
 
     /// <summary>
@@ -5071,9 +5543,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is ZhipuService zhipu)
             {
+                var apiKey = ZhipuKeyBox.Password;
+                var model = GetEditableComboValue(ZhipuModelCombo, "glm-4.5-flash");
                 zhipu.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
             }
-        });
+        }, TestZhipuButton, ZhipuStatusText);
     }
 
     /// <summary>
@@ -5085,9 +5559,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is KimiService kimi)
             {
+                var apiKey = KimiKeyBox.Password;
+                var model = GetEditableComboValue(KimiModelCombo, "kimi-k2-turbo-preview");
                 kimi.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
             }
-        });
+        }, TestKimiButton, KimiStatusText);
     }
 
     /// <summary>
@@ -5099,9 +5575,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is GitHubModelsService github)
             {
+                var token = GitHubModelsTokenBox.Password;
+                var model = GetEditableComboValue(GitHubModelsModelCombo, "gpt-4.1");
                 github.Configure(string.IsNullOrWhiteSpace(token) ? "" : token, model: model);
             }
-        });
+        }, TestGitHubModelsButton, GitHubModelsStatusText);
     }
 
     /// <summary>
@@ -5113,9 +5591,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is GeminiService gemini)
             {
+                var apiKey = GeminiKeyBox.Password;
+                var model = GetEditableComboValue(GeminiModelCombo, "gemini-2.5-flash");
                 gemini.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model);
             }
-        });
+        }, TestGeminiButton, GeminiStatusText);
     }
 
     /// <summary>
@@ -5147,11 +5627,13 @@ public sealed partial class SettingsPage : Page
         {
             if (service is OllamaService ollama)
             {
+                var endpoint = OllamaEndpointBox.Text?.Trim();
+                var model = OllamaModelCombo.Text?.Trim() ?? "llama3.2";
                 ollama.Configure(
                     string.IsNullOrWhiteSpace(endpoint) ? "http://localhost:11434/v1/chat/completions" : endpoint,
                     model);
             }
-        });
+        }, TestOllamaButton, OllamaStatusText);
     }
 
     /// <summary>
@@ -5163,9 +5645,11 @@ public sealed partial class SettingsPage : Page
         {
             if (service is OpenRouterService openRouter)
             {
+                var apiKey = OpenRouterKeyBox.Password;
+                var model = GetEditableComboValue(OpenRouterModelCombo, "openrouter/free");
                 openRouter.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
             }
-        });
+        }, TestOpenRouterButton, OpenRouterStatusText);
     }
     /// <summary>
     /// Test Doubao configuration.
@@ -5176,12 +5660,15 @@ public sealed partial class SettingsPage : Page
         {
             if (service is DoubaoService doubao)
             {
+                var apiKey = DoubaoKeyBox.Password;
+                var endpoint = DoubaoEndpointBox.Text?.Trim();
+                var model = DoubaoModelBox.Text?.Trim();
                 doubao.Configure(
                     string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey,
                     string.IsNullOrWhiteSpace(endpoint) ? "https://ark.cn-beijing.volces.com/api/v3/responses" : endpoint,
                     string.IsNullOrWhiteSpace(model) ? "doubao-seed-translation-250915" : model);
             }
-        });
+        }, TestDoubaoButton, DoubaoStatusText);
     }
 
     /// <summary>
@@ -5193,9 +5680,10 @@ public sealed partial class SettingsPage : Page
         {
             if (service is CaiyunService caiyun)
             {
+                var apiKey = CaiyunKeyBox.Password;
                 caiyun.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey);
             }
-        });
+        }, TestCaiyunButton, CaiyunStatusText);
     }
 
     /// <summary>
@@ -5207,9 +5695,10 @@ public sealed partial class SettingsPage : Page
         {
             if (service is NiuTransService niutrans)
             {
+                var apiKey = NiuTransKeyBox.Password;
                 niutrans.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey);
             }
-        });
+        }, TestNiuTransButton, NiuTransStatusText);
     }
 
     /// <summary>
@@ -5221,8 +5710,13 @@ public sealed partial class SettingsPage : Page
         {
             if (service is VolcanoService volcano)
             {
+                var accessKeyId = VolcanoAccessKeyIdBox.Password;
+                var secretAccessKey = VolcanoSecretAccessKeyBox.Password;
+                volcano.Configure(
+                    string.IsNullOrWhiteSpace(accessKeyId) ? "" : accessKeyId,
+                    string.IsNullOrWhiteSpace(secretAccessKey) ? "" : secretAccessKey);
             }
-        });
+        }, TestVolcanoButton, VolcanoStatusText);
     }
 
     private async void OnClaudeCodeExpanding(Expander sender, ExpanderExpandingEventArgs e)
@@ -5238,6 +5732,23 @@ public sealed partial class SettingsPage : Page
         await RefreshClaudeCodeModelsAsync();
     }
 
+    private Task RefreshClaudeCodeModelsAsync()
+    {
+        return RefreshAgentCliModelsAsync(
+            ClaudeCodeModelCombo,
+            RefreshClaudeCodeModelsButton,
+            ClaudeCodeService.DefaultModel,
+            async () =>
+            {
+                using var httpClient = new HttpClient();
+                var service = new ClaudeCodeService(httpClient);
+                service.Configure(
+                    enabled: true,
+                    GetEditableComboValue(ClaudeCodeModelCombo, ClaudeCodeService.DefaultModel),
+                    ClaudeCodeExecutablePathBox.Text?.Trim());
+                return await service.DiscoverModelsAsync();
+            });
+    }
 
     private async void OnCodexExpanding(Expander sender, ExpanderExpandingEventArgs e)
     {
@@ -5252,6 +5763,19 @@ public sealed partial class SettingsPage : Page
         await RefreshCodexModelsAsync();
     }
 
+    private Task RefreshCodexModelsAsync()
+    {
+        return RefreshAgentCliModelsAsync(
+            CodexModelCombo,
+            RefreshCodexModelsButton,
+            CodexCliService.DefaultModel,
+            async () =>
+            {
+                using var httpClient = new HttpClient();
+                var service = new CodexCliService(httpClient);
+                return await service.DiscoverModelsAsync();
+            });
+    }
 
     private async void OnBrowseClaudeCodeExecutable(object sender, RoutedEventArgs e)
     {
@@ -5266,6 +5790,7 @@ public sealed partial class SettingsPage : Page
                 [".exe", ".cmd", ".bat", ".com"]);
             if (!string.IsNullOrWhiteSpace(path))
             {
+                ClaudeCodeExecutablePathBox.Text = path;
             }
         }
         catch (Exception ex)
@@ -5279,16 +5804,33 @@ public sealed partial class SettingsPage : Page
         if (_hasRefreshedDeepSeekModels) return;
 
         _hasRefreshedDeepSeekModels = true;
+        await RefreshCatalogModelsAsync(
+            "deepseek",
+            DeepSeekModelCombo,
+            RefreshDeepSeekModelsButton,
+            "deepseek-chat",
+            forceRefresh: false,
+            showErrorDialog: false,
+            FetchDeepSeekModelsAsync);
     }
 
     private async void OnRefreshDeepSeekModels(object sender, RoutedEventArgs e)
     {
+        await RefreshCatalogModelsAsync(
+            "deepseek",
+            DeepSeekModelCombo,
+            RefreshDeepSeekModelsButton,
+            "deepseek-chat",
+            forceRefresh: true,
+            showErrorDialog: true,
+            FetchDeepSeekModelsAsync);
     }
 
     private async Task<IReadOnlyList<ModelCatalogEntry>> FetchDeepSeekModelsAsync()
     {
         using var handle = TranslationManagerService.Instance.AcquireHandle();
         var service = new DeepSeekService(handle.Manager.SharedHttpClient);
+        service.Configure(DeepSeekKeyBox.Password);
         return await service.FetchModelsAsync();
     }
 
@@ -5297,16 +5839,33 @@ public sealed partial class SettingsPage : Page
         if (_hasRefreshedZhipuModels) return;
 
         _hasRefreshedZhipuModels = true;
+        await RefreshCatalogModelsAsync(
+            "zhipu",
+            ZhipuModelCombo,
+            RefreshZhipuModelsButton,
+            "glm-4.5-flash",
+            forceRefresh: false,
+            showErrorDialog: false,
+            FetchZhipuModelsAsync);
     }
 
     private async void OnRefreshZhipuModels(object sender, RoutedEventArgs e)
     {
+        await RefreshCatalogModelsAsync(
+            "zhipu",
+            ZhipuModelCombo,
+            RefreshZhipuModelsButton,
+            "glm-4.5-flash",
+            forceRefresh: true,
+            showErrorDialog: true,
+            FetchZhipuModelsAsync);
     }
 
     private async Task<IReadOnlyList<ModelCatalogEntry>> FetchZhipuModelsAsync()
     {
         using var handle = TranslationManagerService.Instance.AcquireHandle();
         var service = new ZhipuService(handle.Manager.SharedHttpClient);
+        service.Configure(ZhipuKeyBox.Password);
         return await service.FetchModelsAsync();
     }
 
@@ -5315,16 +5874,33 @@ public sealed partial class SettingsPage : Page
         if (_hasRefreshedKimiModels) return;
 
         _hasRefreshedKimiModels = true;
+        await RefreshCatalogModelsAsync(
+            "kimi",
+            KimiModelCombo,
+            RefreshKimiModelsButton,
+            "kimi-k2-turbo-preview",
+            forceRefresh: false,
+            showErrorDialog: false,
+            FetchKimiModelsAsync);
     }
 
     private async void OnRefreshKimiModels(object sender, RoutedEventArgs e)
     {
+        await RefreshCatalogModelsAsync(
+            "kimi",
+            KimiModelCombo,
+            RefreshKimiModelsButton,
+            "kimi-k2-turbo-preview",
+            forceRefresh: true,
+            showErrorDialog: true,
+            FetchKimiModelsAsync);
     }
 
     private async Task<IReadOnlyList<ModelCatalogEntry>> FetchKimiModelsAsync()
     {
         using var handle = TranslationManagerService.Instance.AcquireHandle();
         var service = new KimiService(handle.Manager.SharedHttpClient);
+        service.Configure(KimiKeyBox.Password);
         return await service.FetchModelsAsync();
     }
 
@@ -5333,10 +5909,26 @@ public sealed partial class SettingsPage : Page
         if (_hasRefreshedOpenRouterModels) return;
 
         _hasRefreshedOpenRouterModels = true;
+        await RefreshCatalogModelsAsync(
+            "openrouter",
+            OpenRouterModelCombo,
+            RefreshOpenRouterModelsButton,
+            "openrouter/free",
+            forceRefresh: false,
+            showErrorDialog: false,
+            FetchOpenRouterModelsAsync);
     }
 
     private async void OnRefreshOpenRouterModels(object sender, RoutedEventArgs e)
     {
+        await RefreshCatalogModelsAsync(
+            "openrouter",
+            OpenRouterModelCombo,
+            RefreshOpenRouterModelsButton,
+            "openrouter/free",
+            forceRefresh: true,
+            showErrorDialog: true,
+            FetchOpenRouterModelsAsync);
     }
 
     private static async Task<IReadOnlyList<ModelCatalogEntry>> FetchOpenRouterModelsAsync()
@@ -5484,8 +6076,12 @@ public sealed partial class SettingsPage : Page
         {
             if (service is ClaudeCodeService claudeCode)
             {
+                claudeCode.Configure(
+                    enabled: true,
+                    GetEditableComboValue(ClaudeCodeModelCombo, ClaudeCodeService.DefaultModel),
+                    ClaudeCodeExecutablePathBox.Text?.Trim());
             }
-        });
+        }, TestClaudeCodeButton, ClaudeCodeStatusText);
     }
 
     /// <summary>
@@ -5498,8 +6094,14 @@ public sealed partial class SettingsPage : Page
         {
             if (service is CodexCliService codex)
             {
+                codex.Configure(
+                    enabled: true,
+                    GetEditableComboValue(CodexModelCombo, CodexCliService.DefaultModel),
+                    GetTagComboValue(
+                        CodexReasoningEffortCombo,
+                        CodexCliService.DefaultReasoningEffort));
             }
-        });
+        }, TestCodexButton, CodexStatusText);
     }
 
     /// <summary>
@@ -5514,6 +6116,10 @@ public sealed partial class SettingsPage : Page
         if (sender is not ToggleSwitch toggle || !toggle.IsOn) return;
 
         // Only prompt when moving from persisted-off to on.
+        var alreadyEnabled = ReferenceEquals(toggle, ClaudeCodeEnabledToggle)
+            ? _settings.ClaudeCodeEnabled
+            : _settings.CodexEnabled;
+        if (alreadyEnabled) return;
 
         var loc = LocalizationService.Instance;
         var dialog = new ContentDialog
