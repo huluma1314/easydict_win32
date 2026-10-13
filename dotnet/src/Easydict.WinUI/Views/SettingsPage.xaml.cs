@@ -2215,7 +2215,6 @@ public sealed partial class SettingsPage : Page
         ImportedMdxConfigPanel.Children.Clear();
         _mdxCredentialFields.Clear();
 
-        _bobOptionFields.Clear();
 
         _mainWindowServices.Clear();
         _miniWindowServices.Clear();
@@ -2789,7 +2788,6 @@ public sealed partial class SettingsPage : Page
             || !SameSetting(string.IsNullOrWhiteSpace(customModel) ? "gpt-3.5-turbo" : customModel, _settings.CustomOpenAIModel)
             || !SameSetting(string.IsNullOrWhiteSpace(ollamaEndpoint) ? "http://localhost:11434/v1/chat/completions" : ollamaEndpoint, _settings.OllamaEndpoint)
             || !SameSetting(OllamaModelCombo.Text?.Trim() ?? "llama3.2", _settings.OllamaModel)
-            || !SameSetting(string.IsNullOrWhiteSpace(foundryLocalModel) ? FoundryLocalService.DefaultModel : foundryLocalModel, _settings.FoundryLocalModel)
             || !SameSetting(GetEditableComboValue(OpenRouterModelCombo, "openrouter/free"), _settings.OpenRouterModel)
             || !SameSecret(OpenRouterKeyBox.Password, _settings.OpenRouterApiKey)
             || !SameSecret(DoubaoKeyBox.Password, _settings.DoubaoApiKey)
@@ -3194,9 +3192,6 @@ public sealed partial class SettingsPage : Page
             ProxyEnabledToggle.IsOn = _settings.ProxyEnabled;
             ProxyUriBox.Text = _settings.ProxyUri;
             ProxyBypassLocalToggle.IsOn = _settings.ProxyBypassLocal;
-
-            // Layout Detection settings
-            UpdateLayoutDetectionUI();
 
             // Formula Detection
 
@@ -4423,9 +4418,6 @@ public sealed partial class SettingsPage : Page
             ? "http://localhost:11434/v1/chat/completions"
             : ollamaEndpoint;
         _settings.OllamaModel = OllamaModelCombo.Text?.Trim() ?? "llama3.2";
-        _settings.FoundryLocalModel = string.IsNullOrWhiteSpace(foundryLocalModel)
-            ? FoundryLocalService.DefaultModel
-            : foundryLocalModel;
 
         // Save OCR Engine settings
         var ocrOptions = GetCurrentOcrServiceOptions();
@@ -4444,8 +4436,6 @@ public sealed partial class SettingsPage : Page
         var openRouterKey = OpenRouterKeyBox.Password;
         _settings.OpenRouterApiKey = string.IsNullOrWhiteSpace(openRouterKey) ? null : openRouterKey;
 
-        // Save OrcaRouter settings
-        _settings.OrcaRouterApiKey = string.IsNullOrWhiteSpace(orcaRouterKey) ? null : orcaRouterKey;
 
         // Save Doubao settings
         var doubaoKey = DoubaoKeyBox.Password;
@@ -5661,21 +5651,6 @@ public sealed partial class SettingsPage : Page
             }
         }, TestOpenRouterButton, OpenRouterStatusText);
     }
-
-    /// <summary>
-    /// Test OrcaRouter configuration.
-    /// </summary>
-    private async void OnTestOrcaRouter(object sender, RoutedEventArgs e)
-    {
-        await TestServiceAsync("orcarouter", service =>
-        {
-            if (service is OrcaRouterService orcaRouter)
-            {
-                orcaRouter.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
-            }
-        });
-    }
-
     /// <summary>
     /// Test Doubao configuration.
     /// </summary>
@@ -6175,24 +6150,6 @@ public sealed partial class SettingsPage : Page
     }
 
     #region Layout Detection
-
-    private void OnLayoutDetectionModeChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_isLoading) return;
-        OnSettingChanged(sender, e);
-        UpdateLayoutDetectionUI();
-        UpdateOnnxModelStatus();
-    }
-
-    private void UpdateLayoutDetectionUI()
-    {
-
-        // Show/hide ONNX model panel for Auto and OnnxLocal modes
-        var showOnnx = mode is "Auto" or "OnnxLocal";
-
-        // Show/hide Vision LLM panel for VisionLLM mode
-    }
-
     private void UpdateOnnxModelStatus()
     {
 #if DEBUG
