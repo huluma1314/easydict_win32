@@ -4,6 +4,7 @@ using Easydict.TranslationService.Models;
 using Easydict.WinUI.Services;
 using Easydict.WinUI.Services.TextActions;
 using Microsoft.UI;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -108,6 +109,13 @@ public sealed partial class PopButtonWindow : Window
     private bool _isPointerOver;
     private bool _isPressed;
 
+    // Hover-to-translate: resting the pointer on the translate button for this long translates
+    // the pending selection, exactly as if the button had been clicked. Leaving the button,
+    // pressing it, or losing pointer capture cancels the dwell, so sweeping across the strip
+    // never translates.
+    private const int HoverTranslateDelayMs = 200;
+    private DispatcherQueueTimer? _hoverTranslateTimer;
+
     // Cached cursor handles
     private static readonly IntPtr _arrowCursor = LoadCursor(IntPtr.Zero, (IntPtr)IDC_ARROW);
     private static readonly IntPtr _handCursor = LoadCursor(IntPtr.Zero, (IntPtr)IDC_HAND);
@@ -194,6 +202,7 @@ public sealed partial class PopButtonWindow : Window
     public void ShowAt(int screenX, int screenY)
     {
         // Reset interaction state when showing
+        CancelHoverTranslate();
         _isPointerOver = false;
         _isPressed = false;
         RootGrid.Opacity = CurrentBaseOpacity;
@@ -496,10 +505,12 @@ public sealed partial class PopButtonWindow : Window
     {
         _isPointerOver = true;
         UpdateInteractionVisuals();
+        StartHoverTranslateTimer();
     }
 
     private void OnTranslateButtonPointerExited(object sender, PointerRoutedEventArgs e)
     {
+        CancelHoverTranslate();
         _isPointerOver = false;
         _isPressed = false;
         UpdateInteractionVisuals();
@@ -507,6 +518,8 @@ public sealed partial class PopButtonWindow : Window
 
     private void OnTranslateButtonPointerPressed(object sender, PointerRoutedEventArgs e)
     {
+        // A press is an explicit click: cancel the dwell so it cannot also fire on its own.
+        CancelHoverTranslate();
         _isPressed = true;
         UpdateInteractionVisuals();
     }
@@ -515,19 +528,80 @@ public sealed partial class PopButtonWindow : Window
     {
         _isPressed = false;
         UpdateInteractionVisuals();
+
+        // The pointer usually stays on the button after a click; re-arm so hover still works
+        // without having to leave and re-enter the strip.
+        if (_isPointerOver)
+        {
+            StartHoverTranslateTimer();
+        }
     }
 
     private void OnTranslateButtonPointerCanceled(object sender, PointerRoutedEventArgs e)
     {
+        CancelHoverTranslate();
         _isPressed = false;
         UpdateInteractionVisuals();
     }
 
     private void OnTranslateButtonPointerCaptureLost(object sender, PointerRoutedEventArgs e)
     {
+        CancelHoverTranslate();
         _isPressed = false;
         _isPointerOver = false;
         UpdateInteractionVisuals();
+    }
+
+    /// <summary>
+    /// Arms the single-shot dwell timer that turns a hover into a translate.
+    /// </summary>
+    private void StartHoverTranslateTimer()
+    {
+        // Re-arm from scratch so the tick handler can never be registered twice.
+        CancelHoverTranslate();
+
+        _hoverTranslateTimer = DispatcherQueue.CreateTimer();
+        _hoverTranslateTimer.Interval = TimeSpan.FromMilliseconds(HoverTranslateDelayMs);
+        _hoverTranslateTimer.IsRepeating = false;
+        _hoverTranslateTimer.Tick += OnHoverTranslateTick;
+        _hoverTranslateTimer.Start();
+    }
+
+    /// <summary>
+    /// Stops and releases the dwell timer, if any. Safe to call when no timer is armed.
+    /// </summary>
+    private void CancelHoverTranslate()
+    {
+        var timer = _hoverTranslateTimer;
+        if (timer is null)
+        {
+            return;
+        }
+
+        _hoverTranslateTimer = null;
+        timer.Stop();
+        timer.Tick -= OnHoverTranslateTick;
+    }
+
+    private void OnHoverTranslateTick(DispatcherQueueTimer sender, object args)
+    {
+        // Detach first: this is a one-shot, and dropping the handler here guarantees it cannot
+        // run a second time even if nothing else cancels the timer.
+        sender.Stop();
+        sender.Tick -= OnHoverTranslateTick;
+        if (ReferenceEquals(_hoverTranslateTimer, sender))
+        {
+            _hoverTranslateTimer = null;
+        }
+
+        // The pointer must still be resting on the button when the dwell elapses.
+        if (!_isPointerOver || _isPressed)
+        {
+            return;
+        }
+
+        Debug.WriteLine("[PopButton] Translate triggered by hover dwell");
+        OnClicked?.Invoke();
     }
 
     /// <summary>

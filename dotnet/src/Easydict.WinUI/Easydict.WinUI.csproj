@@ -188,15 +188,14 @@
              own workflow steps, so WinUI should not also build them through ProjectReference
              in CI; otherwise test/release graphs can compile the same worker into the same
              obj path concurrently. Local dev keeps the default worker-copy behavior. -->
-        <BuildWorkerOutputs Condition="'$(BuildWorkerOutputs)' == '' and '$(CI)' == 'true'">false</BuildWorkerOutputs>
-        <PublishWorkerOutputs Condition="'$(PublishWorkerOutputs)' == ''">true</PublishWorkerOutputs>
+        <BuildWorkerOutputs Condition="'$(BuildWorkerOutputs)' == ''">false</BuildWorkerOutputs>
+        <PublishWorkerOutputs Condition="'$(PublishWorkerOutputs)' == ''">false</PublishWorkerOutputs>
         <WorkerPublishSelfContained Condition="'$(WorkerPublishSelfContained)' == ''">$(SelfContained)</WorkerPublishSelfContained>
         <!-- Release artifacts always ship the long-document worker, so do not also
              carry the in-process PDF/MuPDF/PdfPig implementation in the host. Debug
              keeps it for local diagnostics and unit-test coverage. Override with
              -p:EnableInProcLongDocFallback=true for one-off local Release debugging. -->
-        <EnableInProcLongDocFallback Condition="'$(EnableInProcLongDocFallback)' == '' and '$(Configuration)' == 'Release'">false</EnableInProcLongDocFallback>
-        <EnableInProcLongDocFallback Condition="'$(EnableInProcLongDocFallback)' == ''">true</EnableInProcLongDocFallback>
+        <EnableInProcLongDocFallback Condition="'$(EnableInProcLongDocFallback)' == ''">false</EnableInProcLongDocFallback>
 
         <!--
             Ensure PRI resources are generated for BOTH packaged and unpackaged modes.
@@ -216,7 +215,7 @@
         <!-- Local-only debug CLI:
              Available for unpackaged local debugging, but excluded from release/MSIX/ZIP/EXE artifacts.
              Can be force-enabled for local runs with -p:EnableLocalDebugLongDocCli=true. -->
-        <EnableLocalDebugLongDocCli Condition="'$(EnableLocalDebugLongDocCli)' == '' and '$(Configuration)' == 'Debug' and '$(WindowsPackageType)' == 'None'">true</EnableLocalDebugLongDocCli>
+        <EnableLocalDebugLongDocCli Condition="'$(EnableLocalDebugLongDocCli)' == ''">false</EnableLocalDebugLongDocCli>
         <DefineConstants Condition="'$(EnableLocalDebugLongDocCli)' == 'true'">$(DefineConstants);LOCAL_DEBUG_LONGDOC_CLI</DefineConstants>
     </PropertyGroup>
 
@@ -342,9 +341,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Easydict.SidecarClient\Easydict.SidecarClient.csproj" />
-      <ProjectReference Include="..\Easydict.DocumentExport\Easydict.DocumentExport.csproj"
-                        Condition="'$(EnableInProcLongDocFallback)' == 'true'" />
-      <ProjectReference Include="..\Polyglot.TextLayout\Polyglot.TextLayout.csproj" />
       <ProjectReference Include="..\Easydict.TranslationService\Easydict.TranslationService.csproj" />
       <!-- Bob plugin compatibility layer (embedded JavaScript engine). -->
       <ProjectReference Include="..\Easydict.BobPlugin\Easydict.BobPlugin.csproj" />
@@ -356,23 +352,25 @@
            via ONNX Runtime's OpenVINO Execution Provider. Model files are downloaded
            on first use into %LOCALAPPDATA%\Easydict\models, not bundled. -->
       <ProjectReference Include="..\Easydict.OpenVINO\Easydict.OpenVINO.csproj" />
-      <!-- Worker projects. ReferenceOutputAssembly=false because these are out-of-process
-           executables — host doesn't link them. They're built whenever WinUI is built and
-           their output is copied to bin\workers\{kind}\ by the CopyWorkerOutput target below.
-           For MSIX, those files must be included as Content in the package; this PR wires
-           the local build copy but leaves the MSIX Content packaging as a follow-up. -->
+      <!-- Minimal build: Easydict.DocumentExport and Polyglot.TextLayout are dropped.
+           Every consumer lives in Services\DocumentExport\**, which is unconditionally
+           excluded from compilation (Compile Remove below), except
+           DocumentExportModes.WorkerOnly.cs, which references neither. Dropping them
+           also drops the MuPDF.NativeAssets payload from the install.
+           Worker ProjectReferences are gated on BuildWorkerOutputs, which now
+           defaults to false; the copy/publish targets below are likewise inert. -->
       <ProjectReference Include="..\Easydict.Workers.LongDoc\Easydict.Workers.LongDoc.csproj"
-                        Condition="'$(BuildWorkerOutputs)' != 'false'"
+                        Condition="'$(BuildWorkerOutputs)' == 'true'"
                         ReferenceOutputAssembly="false"
                         OutputItemType="WorkerOutput"
                         SetTargetFramework="TargetFramework=net8.0-windows10.0.22621.0" />
       <ProjectReference Include="..\Easydict.Workers.LocalAi\Easydict.Workers.LocalAi.csproj"
-                        Condition="'$(BuildWorkerOutputs)' != 'false'"
+                        Condition="'$(BuildWorkerOutputs)' == 'true'"
                         ReferenceOutputAssembly="false"
                         OutputItemType="WorkerOutput"
                         SetTargetFramework="TargetFramework=net8.0-windows10.0.22621.0" />
       <ProjectReference Include="..\Easydict.Workers.Ocr\Easydict.Workers.Ocr.csproj"
-                        Condition="'$(BuildWorkerOutputs)' != 'false'"
+                        Condition="'$(BuildWorkerOutputs)' == 'true'"
                         ReferenceOutputAssembly="false"
                         OutputItemType="WorkerOutput"
                         SetTargetFramework="TargetFramework=net8.0-windows10.0.22621.0" />

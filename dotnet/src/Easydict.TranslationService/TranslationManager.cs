@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Easydict.TranslationService.Models;
 using Easydict.TranslationService.Services;
-using Easydict.TranslationService.Services.AgentCli;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Easydict.TranslationService;
@@ -131,40 +130,12 @@ public sealed class TranslationManager : IDisposable
             SizeLimit = PhoneticCacheLimitKb
         });
 
-        // Register default services
+        // Register default services.
+        // Minimal build: only Google Translate and a user-configured OpenAI-compatible
+        // endpoint are shipped. Every other provider, the local/on-device models, and
+        // the agent-CLI bridges have been removed from the app.
         RegisterService(new GoogleTranslateService(_httpClient));
-        RegisterService(new GoogleWebTranslateService(_httpClient));
-        RegisterService(new BingTranslateService(_httpClient));
-        RegisterService(new DeepLService(_httpClient));
-        RegisterService(new YoudaoService(_httpClient));
-
-        // Register streaming LLM services
-        RegisterService(new OpenAIService(_httpClient));
-        RegisterService(new OllamaService(_httpClient));
-        RegisterService(new OpenRouterService(_httpClient));
-        RegisterService(new OrcaRouterService(_httpClient));
-
-        // Register additional LLM services (Phase 2)
-        RegisterService(new DeepSeekService(_httpClient));
-        RegisterService(new GroqService(_httpClient));
-        RegisterService(new ZhipuService(_httpClient));
-        RegisterService(new KimiService(_httpClient));
-        RegisterService(new GitHubModelsService(_httpClient));
         RegisterService(new CustomOpenAIService(_httpClient));
-        RegisterService(new GeminiService(_httpClient));
-
-        // Register new translation services (Phase 3)
-        RegisterService(new DoubaoService(_httpClient));
-        RegisterService(new CaiyunService(_httpClient));
-        RegisterService(new NiuTransService(_httpClient));
-        RegisterService(new VolcanoService(_httpClient));
-
-        // Register local agent CLI services (subscription-based, no API key)
-        RegisterService(new ClaudeCodeService(_httpClient));
-        RegisterService(new CodexCliService(_httpClient));
-#if ENABLE_LINGUEE_SERVICE
-        RegisterService(new LingueeService(_httpClient));
-#endif
     }
 
     /// <summary>

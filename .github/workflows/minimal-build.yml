@@ -1,0 +1,98 @@
+name: Minimal Build
+
+# Builds the trimmed-down "selection translate only" variant.
+#
+# Compared with the upstream release pipeline this publishes exactly ONE
+# self-contained application instead of six:
+#   * the three worker EXEs (ocr / longdoc / localai) are not built or copied
+#   * easydict-native-bridge.exe and BrowserHostRegistrar.exe are not published
+#   * the in-process long-document fallback is off, which also drops the
+#     PdfPig / MuPDF.NET / PdfSharpCore / ONNX Runtime payloads
+#
+# The hover-to-translate change lives in Views/PopButtonWindow.xaml.cs.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        working-directory: dotnet
+        run: >
+          dotnet restore src/Easydict.WinUI/Easydict.WinUI.csproj
+          --runtime win-x64
+          -p:Configuration=Release
+          -p:BuildWorkerOutputs=false
+          -p:PublishWorkerOutputs=false
+          -p:EnableInProcLongDocFallback=false
+
+      - name: Publish WinUI app (minimal)
+        working-directory: dotnet
+        run: |
+          dotnet publish src/Easydict.WinUI/Easydict.WinUI.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            --no-restore `
+            --output ./publish/win-x64 `
+            -p:Platform=x64 `
+            -p:BuildWorkerOutputs=false `
+            -p:PublishWorkerOutputs=false `
+            -p:EnableInProcLongDocFallback=false `
+            -p:EnableGitHubUpdateCheck=false `
+            -p:PublishTrimmed=false
+
+      - name: Report published size
+        working-directory: dotnet
+        shell: pwsh
+        run: |
+          $root = (Resolve-Path ./publish/win-x64).Path
+          $files = Get-ChildItem $root -Recurse -File
+          $sum = ($files | Measure-Object -Property Length -Sum).Sum
+          Write-Host "FILE COUNT : $($files.Count)"
+          Write-Host "TOTAL SIZE : $([math]::Round($sum/1MB,1)) MB"
+          Write-Host ""
+          Write-Host "Top 15 largest files:"
+          $files |
+            Sort-Object Length -Descending |
+            Select-Object -First 15 |
+            ForEach-Object { "{0,9:N0} KB  {1}" -f ($_.Length/1KB), $_.FullName.Replace($root, '') }
+          Write-Host ""
+          if (Test-Path (Join-Path $root 'workers')) {
+            Write-Host "::error::workers directory is still present - the trim did not take effect"
+          } else {
+            Write-Host "OK: no workers directory"
+          }
+
+      - name: Create ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path ./dotnet/publish/win-x64/* -DestinationPath ./easydict-minimal-win-x64.zip -CompressionLevel Optimal
+          $z = Get-Item ./easydict-minimal-win-x64.zip
+          Write-Host "ZIP size: $([math]::Round($z.Length/1MB,1)) MB"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: easydict-minimal-win-x64
+          path: easydict-minimal-win-x64.zip
+          retention-days: 14
