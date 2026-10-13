@@ -1294,6 +1294,224 @@ public sealed partial class SettingsPage : Page
         }
     }
 
+    /// <summary>
+    /// Apply localization to all UI elements using LocalizationService.
+    /// NOTE: Service names (Google Translate, DeepL, etc.) remain in English.
+    /// </summary>
+    private void ApplyLocalization()
+    {
+        var loc = LocalizationService.Instance;
+        HistoryPrivacyHeaderText.Text = loc.GetString("HistoryPrivacyTitle");
+        HistoryEnabledToggle.Header = null;
+        HistoryEnabledTitleText.Text = loc.GetString("HistoryEnabledLabel");
+        AutomationProperties.SetName(HistoryEnabledToggle, HistoryEnabledTitleText.Text);
+        HistoryPrivacyDescriptionText.Text = loc.GetString("HistoryPrivacyDescription");
+        HistoryRetentionDaysBox.Header = null;
+        HistoryRetentionTitleText.Text = loc.GetString("HistoryRetentionLabel");
+        AutomationProperties.SetName(HistoryRetentionDaysBox, HistoryRetentionTitleText.Text);
+        HistoryRetentionDescriptionText.Text = loc.GetString("HistoryRetentionDescription");
+        ClearHistoryButton.Content = loc.GetString("HistoryClearLabel");
+
+        // Main header
+        if (SettingsHeaderText != null)
+            SettingsHeaderText.Text = loc.GetString("Settings");
+
+        // Enabled Services section
+        if (EnabledServicesHeaderText != null)
+            EnabledServicesHeaderText.Text = loc.GetString("EnabledServices");
+        if (EnabledServicesDescriptionText != null)
+            EnabledServicesDescriptionText.Text = loc.GetString("EnabledServicesDescription");
+
+        // International Services toggle
+        EnableInternationalServicesHeaderText.Text = loc.GetString("EnableInternationalServices");
+        if (EnableInternationalServicesDescriptionText != null)
+            EnableInternationalServicesDescriptionText.Text = loc.GetString("EnableInternationalServicesDescription");
+
+        ApplyWindowResultsLocalization(loc);
+
+        // Language Preferences section
+        if (LanguagePreferencesHeaderText != null)
+            LanguagePreferencesHeaderText.Text = loc.GetString("LanguagePreferences");
+        if (LanguagePreferencesDescriptionText != null)
+            LanguagePreferencesDescriptionText.Text = loc.GetString("LanguagePreferencesDescription");
+
+        FirstLanguageCombo.Header = loc.GetString("FirstLanguage");
+        SecondLanguageCombo.Header = loc.GetString("SecondLanguage");
+        AutoSelectTargetToggle.Header = loc.GetString("AutoSelectTargetLanguage");
+
+        // First/Second Language combos are populated dynamically in OnPageLoaded
+        // via PopulateSettingsLanguageCombo() — no hardcoded localization needed
+
+        // Available Languages section
+        if (AvailableLanguagesHeaderText != null)
+            AvailableLanguagesHeaderText.Text = loc.GetString("AvailableLanguages");
+        if (AvailableLanguagesDescText != null)
+            AvailableLanguagesDescText.Text = loc.GetString("AvailableLanguagesDesc");
+
+        // Service Configuration section
+        if (ServiceConfigurationHeaderText != null)
+            ServiceConfigurationHeaderText.Text = loc.GetString("ServiceConfiguration");
+        if (ServiceConfigurationDescriptionText != null)
+            ServiceConfigurationDescriptionText.Text = loc.GetString("ServiceConfigurationDescription");
+
+        // Local AI configuration
+
+        var windowsAIRating = loc.GetString(LocalAIResources.RatingKeys.WindowsAI);
+        var windowsAIRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.WindowsAI);
+
+        var foundryLocalRating = loc.GetString(LocalAIResources.RatingKeys.FoundryLocal);
+        var foundryLocalRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.FoundryLocal);
+
+        var openVinoRating = loc.GetString(LocalAIResources.RatingKeys.OpenVINO);
+        var openVinoRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.OpenVINO);
+
+        // Service configuration controls (API Keys, Endpoints, Models, etc.)
+        UpdateDeepLApiKeyRequirementUi();
+        CustomOpenAIKeyHeaderText.Text = loc.GetString("ApiKeyOptional");
+        CustomOpenAIEndpointBox.Header = loc.GetString("EndpointRequired");
+        CustomOpenAIModelBox.Header = loc.GetString("Model");
+
+        // Refresh button for Ollama
+
+        // Test buttons for all services
+        var testButtonText = loc.GetString("Test");
+        TestCustomOpenAIButton.Content = testButtonText;
+
+        // Free Services section
+        if (FreeServicesHeaderText != null)
+            FreeServicesHeaderText.Text = loc.GetString("FreeServicesTitle");
+        if (FreeServicesDescriptionText != null)
+            FreeServicesDescriptionText.Text = loc.GetString("FreeServicesDescription");
+
+        // CJK Font section
+
+        // Formula Detection section
+
+        // Translation Cache section
+        if (TranslationCacheHeaderText != null)
+            TranslationCacheHeaderText.Text = loc.GetString("TranslationCache_Title");
+        if (TranslationCacheDescriptionText != null)
+            TranslationCacheDescriptionText.Text = loc.GetString("TranslationCache_Description");
+        TranslationCacheToggle.Header = loc.GetString("TranslationCache_Title");
+        ClearCacheButton.Content = loc.GetString("TranslationCache_Clear");
+        if (TranslationCacheNoteText != null)
+            TranslationCacheNoteText.Text = loc.GetString("TranslationCache_Note");
+
+        // Custom Prompt section
+        if (CustomPromptHeaderText != null)
+            CustomPromptHeaderText.Text = loc.GetString("CustomPrompt_Title");
+        if (CustomPromptDescriptionText != null)
+            CustomPromptDescriptionText.Text = loc.GetString("CustomPrompt_Description");
+        CustomPromptBox.Header = loc.GetString("CustomPrompt_Title");
+        if (CustomPromptNoteText != null)
+            CustomPromptNoteText.Text = loc.GetString("CustomPrompt_Note");
+
+        // HTTP Proxy section
+        if (HttpProxyHeaderText != null)
+            HttpProxyHeaderText.Text = loc.GetString("HttpProxy");
+
+        ProxyEnabledToggle.Header = loc.GetString("UseHttpProxy");
+        ProxyUriBox.Header = loc.GetString("ProxyUrl");
+        ProxyBypassLocalToggle.Header = loc.GetString("BypassProxyForLocalhost");
+
+        // Toggle switch On/Off content (override system locale defaults)
+        var toggleOn = loc.GetString("ToggleOn");
+        var toggleOff = loc.GetString("ToggleOff");
+        AutoSelectTargetToggle.OnContent = toggleOn;
+        AutoSelectTargetToggle.OffContent = toggleOff;
+        EnableInternationalServicesToggle.OnContent = toggleOn;
+        EnableInternationalServicesToggle.OffContent = toggleOff;
+        ProxyEnabledToggle.OnContent = toggleOn;
+        ProxyEnabledToggle.OffContent = toggleOff;
+        ProxyBypassLocalToggle.OnContent = toggleOn;
+        ProxyBypassLocalToggle.OffContent = toggleOff;
+        TranslationCacheToggle.OnContent = toggleOn;
+        TranslationCacheToggle.OffContent = toggleOff;
+        MinimizeToTrayToggle.OnContent = toggleOn;
+        MinimizeToTrayToggle.OffContent = toggleOff;
+        MinimizeToTrayOnStartupToggle.OnContent = toggleOn;
+        MinimizeToTrayOnStartupToggle.OffContent = toggleOff;
+        ClipboardMonitorToggle.OnContent = toggleOn;
+        ClipboardMonitorToggle.OffContent = toggleOff;
+        MouseSelectionTranslateToggle.OnContent = toggleOn;
+        MouseSelectionTranslateToggle.OffContent = toggleOff;
+        HoverWordLookupToggle.OnContent = toggleOn;
+        HoverWordLookupToggle.OffContent = toggleOff;
+        HoverWordLookupOcrFallbackToggle.OnContent = toggleOn;
+        HoverWordLookupOcrFallbackToggle.OffContent = toggleOff;
+        AlwaysOnTopToggle.OnContent = toggleOn;
+        AlwaysOnTopToggle.OffContent = toggleOff;
+        LaunchAtStartupToggle.OnContent = toggleOn;
+        LaunchAtStartupToggle.OffContent = toggleOff;
+        OcrEnableThinkingToggle.OnContent = toggleOn;
+        OcrEnableThinkingToggle.OffContent = toggleOff;
+
+        // Hotkeys section
+        if (HotkeysHeaderText != null)
+            HotkeysHeaderText.Text = loc.GetString("Hotkeys");
+        if (HotkeysDescriptionText != null)
+            HotkeysDescriptionText.Text = loc.GetString("HotkeysDescription");
+
+        ShowHotkeyBox.Header = loc.GetString("ShowWindow");
+        TranslateHotkeyBox.Header = loc.GetString("TranslateSelection");
+        ShowMiniHotkeyBox.Header = loc.GetString("ShowMiniWindow");
+        ShowFixedHotkeyBox.Header = loc.GetString("ShowFixedWindow");
+        OcrTranslateHotkeyBox.Header = loc.GetString("OcrScreenshotTranslate");
+        SilentOcrHotkeyBox.Header = loc.GetString("SilentOcr");
+
+        // About section
+        if (AboutHeaderText != null)
+            AboutHeaderText.Text = loc.GetString("About");
+        if (IssueFeedbackLink != null)
+            IssueFeedbackLink.Content = loc.GetString("IssueFeedback");
+        if (RateAppLink != null)
+        {
+            RateAppLink.Content = loc.GetString("RateApp");
+            RateAppLink.Visibility = EasydictConditions.CanRateApp
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
+
+        // Save Settings button
+        SaveButton.Content = loc.GetString("SaveSettings");
+
+        UpdateSettingsTabLabels(loc);
+
+        // App Theme
+        AppThemeCombo.Header = loc.GetString("AppTheme");
+        if (AppThemeDescriptionText != null)
+            AppThemeDescriptionText.Text = loc.GetString("AppThemeDescription");
+
+        // Localize Theme ComboBox items
+        if (AppThemeCombo.Items.Count >= 3)
+        {
+            ((ComboBoxItem)AppThemeCombo.Items[0]).Content = loc.GetString("ThemeSystem");
+            ((ComboBoxItem)AppThemeCombo.Items[1]).Content = loc.GetString("ThemeLight");
+            ((ComboBoxItem)AppThemeCombo.Items[2]).Content = loc.GetString("ThemeDark");
+            if (AppThemeCombo.Items.Count >= 4)
+            {
+                var minimalText = loc.GetString("ThemeMinimal");
+                ((ComboBoxItem)AppThemeCombo.Items[3]).Content =
+                    string.IsNullOrWhiteSpace(minimalText) || minimalText == "ThemeMinimal"
+                        ? "Minimal"
+                        : minimalText;
+            }
+        }
+
+        // Help icon tooltips
+        ToolTipService.SetToolTip(EnabledServicesHelpIcon, loc.GetString("EnabledServicesHelpTip"));
+        ToolTipService.SetToolTip(ServiceConfigHelpIcon, loc.GetString("ServiceConfigHelpTip"));
+        ToolTipService.SetToolTip(HotkeysHelpIcon, loc.GetString("HotkeysHelpTip"));
+
+        // Behavior, TTS, UI Language (General tab); OCR + Layout Detection (Advanced tab)
+        ApplyBehaviorLocalization(loc);
+        ApplyTtsLocalization(loc);
+        ApplyUILanguageLocalization(loc);
+        ApplyOcrLocalization(loc);
+        ApplyLayoutDetectionLocalization(loc);
+        ApplyPasswordRevealLocalization(loc);
+    }
 
     private static void SetLocalAiRating(TextBlock? ratingText, string rating, string tooltip)
     {
@@ -1397,6 +1615,11 @@ public sealed partial class SettingsPage : Page
         }
     }
 
+    private IEnumerable<Button> GetPasswordRevealButtons()
+    {
+        yield return CustomOpenAIKeyRevealButton;
+        yield return OcrApiKeyRevealButton;
+    }
 
     private void InitializePasswordTailHints()
     {
@@ -1513,6 +1736,20 @@ public sealed partial class SettingsPage : Page
         _passwordTailHints.Clear();
     }
 
+    private string GetPasswordRevealSecretResourceKey(PasswordBox passwordBox)
+    {
+
+
+
+
+
+        if (ReferenceEquals(passwordBox, OcrApiKeyBox))
+        {
+            return "OcrApiKey";
+        }
+
+        return "ApiKey";
+    }
 
     private void ApplyLayoutDetectionLocalization(LocalizationService loc)
     {
@@ -1879,7 +2116,165 @@ public sealed partial class SettingsPage : Page
 #endif
     }
 
+    /// <summary>
+    /// Register event handlers to detect settings changes.
+    /// </summary>
+    private void RegisterChangeHandlers()
+    {
+        if (_changeHandlersRegistered)
+        {
+            return;
+        }
 
+        // ComboBox changes
+        FirstLanguageCombo.SelectionChanged += OnSettingChanged;
+        SecondLanguageCombo.SelectionChanged += OnSettingChanged;
+
+        // ToggleSwitch changes
+        AutoSelectTargetToggle.Toggled += OnSettingChanged;
+        MinimizeToTrayToggle.Toggled += OnSettingChanged;
+        MinimizeToTrayOnStartupToggle.Toggled += OnSettingChanged;
+        ClipboardMonitorToggle.Toggled += OnSettingChanged;
+        MouseSelectionTranslateToggle.Toggled += OnSettingChanged;
+        MouseSelectionTranslateToggle.Toggled += OnMouseSelectionTranslateToggled;
+        MouseSelectionExcludedAppsBox.TextChanged += OnSettingChanged;
+        HoverWordLookupToggle.Toggled += OnSettingChanged;
+        _settings.HoverWordLookupEnabledChanged += OnHoverWordLookupEnabledChanged;
+        HoverWordLookupToggle.Toggled += OnHoverWordLookupToggled;
+        HoverWordLookupModifierCombo.SelectionChanged += OnSettingChanged;
+        HoverWordLookupServiceCombo.SelectionChanged += OnSettingChanged;
+        HoverWordLookupOcrFallbackToggle.Toggled += OnSettingChanged;
+        HoverWordLookupDelaySlider.ValueChanged += OnHoverWordLookupDelayChanged;
+        AlwaysOnTopToggle.Toggled += OnSettingChanged;
+        CompactModeToggle.Toggled += OnSettingChanged;
+        ShowOcrButtonToggle.Toggled += OnSettingChanged;
+        ShowPinButtonToggle.Toggled += OnSettingChanged;
+        ShowSourcePlayButtonToggle.Toggled += OnSettingChanged;
+        ShowSwapButtonToggle.Toggled += OnSettingChanged;
+        LaunchAtStartupToggle.Toggled += OnSettingChanged;
+        HideEmptyServiceResultsToggle.Toggled += OnSettingChanged;
+        EnableLocalDictionarySuggestionsToggle.Toggled += OnSettingChanged;
+        ProxyEnabledToggle.Toggled += OnSettingChanged;
+        ProxyBypassLocalToggle.Toggled += OnSettingChanged;
+        TtsSpeedSlider.ValueChanged += OnSettingChanged;
+        ResultFontScaleSlider.ValueChanged += OnSettingChanged;
+        MouseSelectionPopDelaySlider.ValueChanged += OnSettingChanged;
+        AutoPlayTranslationToggle.Toggled += OnSettingChanged;
+        TtsVoiceCombo.SelectionChanged += OnTtsVoiceSelectionChanged;
+
+        // TextBox/PasswordBox changes - existing
+        ProxyUriBox.TextChanged += OnSettingChanged;
+        ShowHotkeyBox.TextChanged += OnSettingChanged;
+        TranslateHotkeyBox.TextChanged += OnSettingChanged;
+        ShowMiniHotkeyBox.TextChanged += OnSettingChanged;
+        ShowFixedHotkeyBox.TextChanged += OnSettingChanged;
+        OcrTranslateHotkeyBox.TextChanged += OnSettingChanged;
+        SilentOcrHotkeyBox.TextChanged += OnSettingChanged;
+        ShowHotkeyEnabledToggle.Toggled += OnSettingChanged;
+        TranslateHotkeyEnabledToggle.Toggled += OnSettingChanged;
+        ShowMiniHotkeyEnabledToggle.Toggled += OnSettingChanged;
+        ShowFixedHotkeyEnabledToggle.Toggled += OnSettingChanged;
+        OcrTranslateHotkeyEnabledToggle.Toggled += OnSettingChanged;
+        SilentOcrHotkeyEnabledToggle.Toggled += OnSettingChanged;
+        OcrEngineCombo.SelectionChanged += OnOcrEngineChanged;
+        OcrApiKeyBox.PasswordChanged += OnSettingChanged;
+        OcrEndpointBox.TextChanged += OnSettingChanged;
+        OcrModelBox.TextChanged += OnSettingChanged;
+        OcrSystemPromptBox.TextChanged += OnSettingChanged;
+        OcrEnableThinkingToggle.Toggled += OnSettingChanged;
+
+        // TextBox/PasswordBox changes - new services
+        CustomOpenAIEndpointBox.TextChanged += OnSettingChanged;
+        CustomOpenAIKeyBox.PasswordChanged += OnSettingChanged;
+        CustomOpenAIModelBox.TextChanged += OnSettingChanged;
+
+        // Agent CLI services (Claude Code / Codex)
+
+        // Layout detection changes
+
+        // CheckBox changes
+
+        // Service selection changes (via PropertyChanged on ServiceCheckItem)
+        RegisterServiceCollectionHandlers(_mainWindowServices);
+        RegisterServiceCollectionHandlers(_miniWindowServices);
+        RegisterServiceCollectionHandlers(_fixedWindowServices);
+        _changeHandlersRegistered = true;
+    }
+
+    private void UnregisterChangeHandlers()
+    {
+        if (!_changeHandlersRegistered)
+        {
+            return;
+        }
+
+        FirstLanguageCombo.SelectionChanged -= OnSettingChanged;
+        SecondLanguageCombo.SelectionChanged -= OnSettingChanged;
+
+        AutoSelectTargetToggle.Toggled -= OnSettingChanged;
+        MinimizeToTrayToggle.Toggled -= OnSettingChanged;
+        MinimizeToTrayOnStartupToggle.Toggled -= OnSettingChanged;
+        ClipboardMonitorToggle.Toggled -= OnSettingChanged;
+        MouseSelectionTranslateToggle.Toggled -= OnSettingChanged;
+        MouseSelectionTranslateToggle.Toggled -= OnMouseSelectionTranslateToggled;
+        MouseSelectionExcludedAppsBox.TextChanged -= OnSettingChanged;
+        HoverWordLookupToggle.Toggled -= OnSettingChanged;
+        _settings.HoverWordLookupEnabledChanged -= OnHoverWordLookupEnabledChanged;
+        HoverWordLookupToggle.Toggled -= OnHoverWordLookupToggled;
+        HoverWordLookupModifierCombo.SelectionChanged -= OnSettingChanged;
+        HoverWordLookupServiceCombo.SelectionChanged -= OnSettingChanged;
+        HoverWordLookupOcrFallbackToggle.Toggled -= OnSettingChanged;
+        HoverWordLookupDelaySlider.ValueChanged -= OnHoverWordLookupDelayChanged;
+        AlwaysOnTopToggle.Toggled -= OnSettingChanged;
+        LaunchAtStartupToggle.Toggled -= OnSettingChanged;
+        HideEmptyServiceResultsToggle.Toggled -= OnSettingChanged;
+        EnableLocalDictionarySuggestionsToggle.Toggled -= OnSettingChanged;
+        ShowOcrButtonToggle.Toggled -= OnSettingChanged;
+        CompactModeToggle.Toggled -= OnSettingChanged;
+        ShowPinButtonToggle.Toggled -= OnSettingChanged;
+        ShowSourcePlayButtonToggle.Toggled -= OnSettingChanged;
+        ShowSwapButtonToggle.Toggled -= OnSettingChanged;
+        ProxyEnabledToggle.Toggled -= OnSettingChanged;
+        ProxyBypassLocalToggle.Toggled -= OnSettingChanged;
+        TtsSpeedSlider.ValueChanged -= OnSettingChanged;
+        ResultFontScaleSlider.ValueChanged -= OnSettingChanged;
+        MouseSelectionPopDelaySlider.ValueChanged -= OnSettingChanged;
+        AutoPlayTranslationToggle.Toggled -= OnSettingChanged;
+        TtsVoiceCombo.SelectionChanged -= OnTtsVoiceSelectionChanged;
+
+        ProxyUriBox.TextChanged -= OnSettingChanged;
+        ShowHotkeyBox.TextChanged -= OnSettingChanged;
+        TranslateHotkeyBox.TextChanged -= OnSettingChanged;
+        ShowMiniHotkeyBox.TextChanged -= OnSettingChanged;
+        ShowFixedHotkeyBox.TextChanged -= OnSettingChanged;
+        OcrTranslateHotkeyBox.TextChanged -= OnSettingChanged;
+        SilentOcrHotkeyBox.TextChanged -= OnSettingChanged;
+        ShowHotkeyEnabledToggle.Toggled -= OnSettingChanged;
+        TranslateHotkeyEnabledToggle.Toggled -= OnSettingChanged;
+        ShowMiniHotkeyEnabledToggle.Toggled -= OnSettingChanged;
+        ShowFixedHotkeyEnabledToggle.Toggled -= OnSettingChanged;
+        OcrTranslateHotkeyEnabledToggle.Toggled -= OnSettingChanged;
+        SilentOcrHotkeyEnabledToggle.Toggled -= OnSettingChanged;
+        OcrEngineCombo.SelectionChanged -= OnOcrEngineChanged;
+        OcrApiKeyBox.PasswordChanged -= OnSettingChanged;
+        OcrEndpointBox.TextChanged -= OnSettingChanged;
+        OcrModelBox.TextChanged -= OnSettingChanged;
+        OcrSystemPromptBox.TextChanged -= OnSettingChanged;
+        OcrEnableThinkingToggle.Toggled -= OnSettingChanged;
+
+        CustomOpenAIEndpointBox.TextChanged -= OnSettingChanged;
+        CustomOpenAIKeyBox.PasswordChanged -= OnSettingChanged;
+        CustomOpenAIModelBox.TextChanged -= OnSettingChanged;
+
+
+
+
+        UnregisterServiceCollectionHandlers(_mainWindowServices);
+        UnregisterServiceCollectionHandlers(_miniWindowServices);
+        UnregisterServiceCollectionHandlers(_fixedWindowServices);
+
+        _changeHandlersRegistered = false;
+    }
 
     /// <summary>
     /// Named handler for ServiceCheckItem.PropertyChanged, replacing the lambda
@@ -2156,6 +2551,11 @@ public sealed partial class SettingsPage : Page
         return _initializedSettingsTabData.Contains(tabId);
     }
 
+    private bool ServicesTabSettingsDifferFromSettings()
+    {
+        var customModel = CustomOpenAIModelBox.Text?.Trim();
+
+    }
 
     private bool GeneralTabSettingsDifferFromSettings()
     {
@@ -2294,9 +2694,232 @@ public sealed partial class SettingsPage : Page
         OnSettingChanged(sender, e);
     }
 
+    private void ApplyDeepLModeMutualExclusion()
+    {
+
+        UpdateDeepLApiKeyRequirementUi();
+    }
+
+    private void UpdateDeepLApiKeyRequirementUi()
+    {
+    }
+
+    private async Task<bool> ValidateDeepLQualityApiKeyAsync(string titleKey)
+    {
+
+        var loc = LocalizationService.Instance;
+        var message = loc.GetString("DeepLQualityApiKeyRequiredMessage");
+        if (titleKey == "TestFailedTitle")
+        {
+            await ShowTestFailureAsync(message);
+        }
+        else
+        {
+            await ShowSimpleDialogAsync(loc.GetString(titleKey), message);
+        }
+        return false;
+    }
+
+    private void LoadSettings(bool deferLazyTabData = false)
+    {
+        if (ShouldLoadSettingsTab(SettingsTabId.Services, deferLazyTabData))
+        {
+            // International services toggle
+            EnableInternationalServicesToggle.IsOn = _settings.EnableInternationalServices;
+
+            // DeepL settings (SettingsService normalizes on Load: Quality => !Free)
+            ApplyDeepLModeMutualExclusion();
+
+            // OpenAI settings
+
+            // DeepSeek settings
+
+            // Groq settings
+
+            // Zhipu settings
+
+            // Kimi settings
+
+            // GitHub Models settings
+
+            // Gemini settings
+
+            // Custom OpenAI settings
+            CustomOpenAIEndpointBox.Text = _settings.CustomOpenAIEndpoint;
+            CustomOpenAIKeyBox.Password = _settings.CustomOpenAIApiKey ?? string.Empty;
+            CustomOpenAIModelBox.Text = _settings.CustomOpenAIModel;
+
+            // Ollama settings
+
+            // Foundry Local settings
+
+            // OpenRouter settings
+
+            // OrcaRouter settings
+
+            // Doubao settings
+
+            // Caiyun settings
+
+            // NiuTrans settings
+
+            // Volcano settings
+
+            // Youdao settings
+
+            // Agent CLI settings (Claude Code / Codex)
+
+            // Restore test status indicators
+            RestoreTestStatusIndicators();
 
 
+            // Probe Windows AI (Phi Silica) availability and attach to any
+            // shared preparation task started from another surface.
 
+            // Same for the OpenVINO local NLLB provider: read cache status and
+            // subscribe to status-change events for download progress.
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.General, deferLazyTabData))
+        {
+            // TTS settings
+            TtsSpeedSlider.Value = _settings.TtsSpeed;
+            AutoPlayTranslationToggle.IsOn = _settings.AutoPlayTranslation;
+            _pendingTtsVoiceId = _settings.SelectedTtsVoiceId;
+
+            _ = LoadTtsVoicesAsync();
+
+            // App Theme - select based on current setting
+            SelectComboByTag(AppThemeCombo, _settings.AppTheme);
+
+            MinimizeToTrayToggle.IsOn = _settings.MinimizeToTray;
+            MinimizeToTrayOnStartupToggle.IsOn = _settings.MinimizeToTrayOnStartup;
+            ClipboardMonitorToggle.IsOn = _settings.ClipboardMonitoring;
+            MouseSelectionTranslateToggle.IsOn = _settings.MouseSelectionTranslate;
+            HistoryEnabledToggle.IsOn = _settings.HistoryEnabled;
+            HistoryRetentionDaysBox.Value = _settings.HistoryRetentionDays;
+            HistoryRetentionDaysBox.IsEnabled = _settings.HistoryEnabled;
+            MouseSelectionExcludedAppsBox.Text = string.Join(", ", _settings.MouseSelectionExcludedApps);
+            MouseSelectionOptionsPanel.Visibility = _settings.MouseSelectionTranslate
+                ? Visibility.Visible : Visibility.Collapsed;
+            AlwaysOnTopToggle.IsOn = _settings.AlwaysOnTop;
+            ResultFontScaleSlider.Value = _settings.ResultFontScale;
+            MouseSelectionPopDelaySlider.Value = _settings.MouseSelectionPopDelayMs;
+            CompactModeToggle.IsOn = _settings.CompactMode;
+            ShowOcrButtonToggle.IsOn = _settings.ShowOcrButton;
+            ShowPinButtonToggle.IsOn = _settings.ShowPinButton;
+            ShowSourcePlayButtonToggle.IsOn = _settings.ShowSourcePlayButton;
+            ShowSwapButtonToggle.IsOn = _settings.ShowSwapButton;
+            LaunchAtStartupToggle.IsOn = _settings.LaunchAtStartup;
+            HideEmptyServiceResultsToggle.IsOn = _settings.HideEmptyServiceResults;
+            EnableLocalDictionarySuggestionsToggle.IsOn = _settings.EnableLocalDictionarySuggestions;
+            var localDictionarySuggestionsState = GetLocalDictionarySuggestionsToggleState(_settings.ImportedMdxDictionaries.Count);
+            EnableLocalDictionarySuggestionsToggle.IsEnabled = localDictionarySuggestionsState.IsEnabled;
+            EnableLocalDictionarySuggestionsHintText.Text = localDictionarySuggestionsState.HintText;
+            EnableLocalDictionarySuggestionsHintText.Visibility = string.IsNullOrEmpty(localDictionarySuggestionsState.HintText)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.Labs, deferLazyTabData))
+        {
+            HoverWordLookupToggle.IsOn = _settings.HoverWordLookupEnabled;
+            SetTagComboValue(HoverWordLookupModifierCombo, _settings.HoverWordLookupModifier, "Ctrl");
+            HoverWordLookupOcrFallbackToggle.IsOn = _settings.HoverWordLookupUseOcrFallback;
+            HoverWordLookupDelaySlider.Value = _settings.HoverWordLookupDelayMs;
+            HoverWordLookupDelayValueText.Text = $"{_settings.HoverWordLookupDelayMs} ms";
+            PopulateHoverWordLookupServiceCombo();
+            SetTagComboValue(HoverWordLookupServiceCombo, _settings.HoverWordLookupServiceId, "");
+            HoverWordLookupPanel.Visibility = _settings.HoverWordLookupEnabled
+                ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.Language, deferLazyTabData))
+        {
+            // Language preferences
+            SelectComboByTag(FirstLanguageCombo, _settings.FirstLanguage);
+            SelectComboByTag(SecondLanguageCombo, _settings.SecondLanguage);
+            AutoSelectTargetToggle.IsOn = _settings.AutoSelectTargetLanguage;
+
+            // UI Language - select based on current setting or system default
+            var currentLanguage = LocalizationService.Instance.CurrentLanguage;
+            SelectComboByTag(UILanguageCombo, currentLanguage);
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.Hotkeys, deferLazyTabData))
+        {
+            ShowHotkeyBox.Text = _settings.ShowWindowHotkey;
+            TranslateHotkeyBox.Text = _settings.TranslateSelectionHotkey;
+            ShowMiniHotkeyBox.Text = _settings.ShowMiniWindowHotkey;
+            ShowFixedHotkeyBox.Text = _settings.ShowFixedWindowHotkey;
+            OcrTranslateHotkeyBox.Text = _settings.OcrTranslateHotkey;
+            SilentOcrHotkeyBox.Text = _settings.SilentOcrHotkey;
+            ShowHotkeyEnabledToggle.IsOn = _settings.EnableShowWindowHotkey;
+            TranslateHotkeyEnabledToggle.IsOn = _settings.EnableTranslateSelectionHotkey;
+            ShowMiniHotkeyEnabledToggle.IsOn = _settings.EnableShowMiniWindowHotkey;
+            ShowFixedHotkeyEnabledToggle.IsOn = _settings.EnableShowFixedWindowHotkey;
+            OcrTranslateHotkeyEnabledToggle.IsOn = _settings.EnableOcrTranslateHotkey;
+            SilentOcrHotkeyEnabledToggle.IsOn = _settings.EnableSilentOcrHotkey;
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.Advanced, deferLazyTabData))
+        {
+            // OCR Engine settings
+            SelectComboByTag(OcrEngineCombo, _settings.OcrEngine.ToString());
+            OcrApiKeyBox.Password = _settings.OcrApiKey ?? string.Empty;
+            OcrEndpointBox.Text = _settings.OcrEndpoint;
+            OcrModelBox.Text = PpOcrV6ModelCatalog.TryGet(_settings.OcrModel, out _)
+                ? OcrServiceOptions.DefaultModel
+                : _settings.OcrModel;
+            OcrSystemPromptBox.Text = _settings.OcrSystemPrompt;
+            OcrEnableThinkingToggle.IsOn = _settings.OcrEnableThinking;
+            ApplyOcrEngineDefaultsIfNeeded(GetSelectedOcrEngine());
+            UpdateOcrEngineUI();
+
+            // HTTP Proxy settings
+            ProxyEnabledToggle.IsOn = _settings.ProxyEnabled;
+            ProxyUriBox.Text = _settings.ProxyUri;
+            ProxyBypassLocalToggle.IsOn = _settings.ProxyBypassLocal;
+
+            // Formula Detection
+
+            // Translation Cache
+            TranslationCacheToggle.IsOn = _settings.EnableTranslationCache;
+
+            // Custom Prompt
+            CustomPromptBox.Text = _settings.LongDocCustomPrompt;
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.Views, deferLazyTabData))
+        {
+            // Enabled services for each window (populate from TranslationManager.Services)
+            // Acquire handle once for all three collections to avoid repeated handle acquisition
+            UnregisterServiceCollectionHandlers(_mainWindowServices);
+            UnregisterServiceCollectionHandlers(_miniWindowServices);
+            UnregisterServiceCollectionHandlers(_fixedWindowServices);
+            using (var handle = TranslationManagerService.Instance.AcquireHandle())
+            {
+                var manager = handle.Manager;
+                PopulateServiceCollection(_mainWindowServices, _settings.MainWindowEnabledServices, _settings.MainWindowServiceEnabledQuery, manager);
+                PopulateServiceCollection(_miniWindowServices, _settings.MiniWindowEnabledServices, _settings.MiniWindowServiceEnabledQuery, manager);
+                PopulateServiceCollection(_fixedWindowServices, _settings.FixedWindowEnabledServices, _settings.FixedWindowServiceEnabledQuery, manager);
+            }
+            ResetServiceReorderModes();
+            if (_changeHandlersRegistered)
+            {
+                RegisterServiceCollectionHandlers(_mainWindowServices);
+                RegisterServiceCollectionHandlers(_miniWindowServices);
+                RegisterServiceCollectionHandlers(_fixedWindowServices);
+            }
+        }
+
+        if (ShouldLoadSettingsTab(SettingsTabId.About, deferLazyTabData))
+        {
+            // Set version from assembly metadata
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            VersionText.Text = $"Version {version?.ToString(3) ?? "Unknown"}";
+        }
+    }
 
     /// <summary>
     /// Restores test success indicators based on persisted ServiceTestStatus.
@@ -3307,6 +3930,339 @@ public sealed partial class SettingsPage : Page
         await ShowDialogAsync(dialog);
     }
 
+    /// <summary>
+    /// Validates and saves all settings. Returns true if save was successful, false if validation failed.
+    /// </summary>
+    private async Task<bool> SaveSettingsAsync()
+    {
+        EnsureAllSettingsTabDataInitialized();
+
+        // Get localization service instance once for the entire method
+        var loc = LocalizationService.Instance;
+
+        // Capture original proxy settings to detect changes
+        var originalProxyEnabled = _settings.ProxyEnabled;
+        var originalProxyUri = _settings.ProxyUri;
+        var originalProxyBypassLocal = _settings.ProxyBypassLocal;
+
+        // Capture whether any enabled hotkey was already Win+Space, so the
+        // OS-override notice is shown only when the user newly selects it.
+        var hadWinSpaceHotkey = HasEnabledWinSpaceHotkey();
+
+        // === Validate all inputs before modifying any settings ===
+
+        // Validate language preferences
+        var firstLang = GetSelectedTag(FirstLanguageCombo) ?? "zh";
+        var secondLang = GetSelectedTag(SecondLanguageCombo) ?? "en";
+
+        if (firstLang == secondLang)
+        {
+            var errorDialog = new ContentDialog
+            {
+                Title = loc.GetString("InvalidLanguageSelection"),
+                Content = loc.GetString("InvalidLanguageSelectionMessage"),
+                CloseButtonText = loc.GetString("OK"),
+                XamlRoot = this.XamlRoot
+            };
+            await ShowDialogAsync(errorDialog);
+            return false;
+        }
+
+        if (!await ValidateDeepLQualityApiKeyAsync("StatusError"))
+        {
+            return false;
+        }
+
+        // Validate proxy URI
+        var proxyUri = ProxyUriBox.Text?.Trim() ?? "";
+        if (ProxyEnabledToggle.IsOn && string.IsNullOrWhiteSpace(proxyUri))
+        {
+            var errorDialog = new ContentDialog
+            {
+                Title = loc.GetString("InvalidProxyUrl"),
+                Content = loc.GetString("InvalidProxyUrlMessage"),
+                CloseButtonText = loc.GetString("OK"),
+                XamlRoot = this.XamlRoot
+            };
+            await ShowDialogAsync(errorDialog);
+            return false;
+        }
+        if (ProxyEnabledToggle.IsOn && !string.IsNullOrWhiteSpace(proxyUri))
+        {
+            if (!Uri.TryCreate(proxyUri, UriKind.Absolute, out _))
+            {
+                var errorDialog = new ContentDialog
+                {
+                    Title = loc.GetString("InvalidProxyUrl"),
+                    Content = loc.GetString("InvalidProxyUrlMessage"),
+                    CloseButtonText = loc.GetString("OK"),
+                    XamlRoot = this.XamlRoot
+                };
+                await ShowDialogAsync(errorDialog);
+                return false;
+            }
+        }
+
+
+        // Validate hotkey strings — an enabled hotkey that cannot be parsed
+        // (or that has no modifier and is not a function key) would silently
+        // fail to register, so block the save and tell the user.
+        var invalidHotkeys = new List<string>();
+        CollectInvalidHotkey(ShowHotkeyEnabledToggle.IsOn, ShowHotkeyBox.Text, "ShowWindow", invalidHotkeys);
+        CollectInvalidHotkey(TranslateHotkeyEnabledToggle.IsOn, TranslateHotkeyBox.Text, "TranslateSelection", invalidHotkeys);
+        CollectInvalidHotkey(ShowMiniHotkeyEnabledToggle.IsOn, ShowMiniHotkeyBox.Text, "ShowMiniWindow", invalidHotkeys);
+        CollectInvalidHotkey(ShowFixedHotkeyEnabledToggle.IsOn, ShowFixedHotkeyBox.Text, "ShowFixedWindow", invalidHotkeys);
+        CollectInvalidHotkey(OcrTranslateHotkeyEnabledToggle.IsOn, OcrTranslateHotkeyBox.Text, "OcrScreenshotTranslate", invalidHotkeys);
+        CollectInvalidHotkey(SilentOcrHotkeyEnabledToggle.IsOn, SilentOcrHotkeyBox.Text, "SilentOcr", invalidHotkeys);
+
+        if (invalidHotkeys.Count > 0)
+        {
+            var errorDialog = new ContentDialog
+            {
+                Title = loc.GetString("InvalidHotkeyTitle"),
+                Content = loc.GetString("InvalidHotkeyMessage")
+                    + "\n\n"
+                    + string.Join("\n", invalidHotkeys),
+                CloseButtonText = loc.GetString("OK"),
+                XamlRoot = this.XamlRoot
+            };
+            await ShowDialogAsync(errorDialog);
+            return false;
+        }
+
+        // === All validations passed — apply settings ===
+
+        // Save international services setting
+        _settings.EnableInternationalServices = EnableInternationalServicesToggle.IsOn;
+        _settings.HasUserConfiguredServices = true;
+
+        _settings.FirstLanguage = firstLang;
+        _settings.SecondLanguage = secondLang;
+        _settings.AutoSelectTargetLanguage = AutoSelectTargetToggle.IsOn;
+
+        // Save selected languages from checkbox grid
+        _settings.SelectedLanguages = _languageItems
+            .Where(item => item.IsSelected)
+            .Select(item => item.Tag)
+            .ToList();
+
+        // Save DeepL settings (SettingsService.Save normalizes: Quality => !Free)
+
+        // Save OpenAI settings
+
+        // Save DeepSeek settings
+
+        // Save Groq settings
+
+        // Save Zhipu settings
+
+        // Save Kimi settings
+
+        // Save GitHub Models settings
+
+        // Save Gemini settings
+
+        // Save Custom OpenAI settings
+        var customEndpoint = CustomOpenAIEndpointBox.Text?.Trim() ?? "";
+        _settings.CustomOpenAIEndpoint = customEndpoint;
+        var customKey = CustomOpenAIKeyBox.Password;
+        _settings.CustomOpenAIApiKey = string.IsNullOrWhiteSpace(customKey) ? null : customKey;
+        var customModel = CustomOpenAIModelBox.Text?.Trim();
+        _settings.CustomOpenAIModel = string.IsNullOrWhiteSpace(customModel) ? "gpt-3.5-turbo" : customModel;
+
+        // Save Ollama settings
+
+        // Save OCR Engine settings
+        var ocrOptions = GetCurrentOcrServiceOptions();
+        _settings.OcrEngine = ocrOptions.Engine;
+        _settings.OcrApiKey = ocrOptions.ApiKey;
+        _settings.OcrEndpoint = ocrOptions.Endpoint;
+        if (ocrOptions.Engine != OcrEngineType.PpOcrV6)
+        {
+            _settings.OcrModel = ocrOptions.Model;
+        }
+        _settings.OcrSystemPrompt = ocrOptions.SystemPrompt;
+        _settings.OcrEnableThinking = ocrOptions.EnableThinking;
+
+        // Save OpenRouter settings
+
+
+        // Save Doubao settings
+
+        // Save Caiyun settings
+
+        // Save NiuTrans settings
+
+        // Save Volcano settings
+
+        // Save Youdao settings
+
+        // Save Agent CLI settings (Claude Code / Codex)
+
+        // Save encrypted MDX dictionary credentials from dynamic UI
+        SaveEncryptedMdxCredentials();
+
+        // Save Bob plugin options from dynamic UI (secure ones go to the credential store)
+
+        // Save HTTP Proxy settings (already validated above)
+        _settings.ProxyEnabled = ProxyEnabledToggle.IsOn;
+        _settings.ProxyBypassLocal = ProxyBypassLocalToggle.IsOn;
+        _settings.ProxyUri = proxyUri;
+
+        // Save behavior settings
+        _settings.MinimizeToTray = MinimizeToTrayToggle.IsOn;
+        _settings.MinimizeToTrayOnStartup = MinimizeToTrayOnStartupToggle.IsOn;
+        _settings.ClipboardMonitoring = ClipboardMonitorToggle.IsOn;
+        _settings.MouseSelectionTranslate = MouseSelectionTranslateToggle.IsOn;
+        _settings.MouseSelectionExcludedApps = MouseSelectionExcludedAppsBox.Text
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(s => s.Length > 0)
+            .ToList();
+        _settings.HoverWordLookupEnabled = HoverWordLookupToggle.IsOn;
+        _settings.HoverWordLookupModifier = GetTagComboValue(HoverWordLookupModifierCombo, "Ctrl");
+        _settings.HoverWordLookupUseOcrFallback = HoverWordLookupOcrFallbackToggle.IsOn;
+        _settings.HoverWordLookupDelayMs = (int)Math.Round(HoverWordLookupDelaySlider.Value);
+        _settings.HoverWordLookupServiceId = GetTagComboValue(HoverWordLookupServiceCombo, "");
+        _settings.AlwaysOnTop = AlwaysOnTopToggle.IsOn;
+        _settings.ResultFontScale = ResultFontScaleSlider.Value;
+        _settings.MouseSelectionPopDelayMs = (int)Math.Round(MouseSelectionPopDelaySlider.Value);
+        _settings.CompactMode = CompactModeToggle.IsOn;
+        _settings.ShowOcrButton = ShowOcrButtonToggle.IsOn;
+        _settings.ShowPinButton = ShowPinButtonToggle.IsOn;
+        _settings.ShowSourcePlayButton = ShowSourcePlayButtonToggle.IsOn;
+        _settings.ShowSwapButton = ShowSwapButtonToggle.IsOn;
+        _settings.LaunchAtStartup = LaunchAtStartupToggle.IsOn;
+        _settings.TtsSpeed = TtsSpeedSlider.Value;
+        _settings.SelectedTtsVoiceId = _pendingTtsVoiceId;
+        _settings.AutoPlayTranslation = AutoPlayTranslationToggle.IsOn;
+        _settings.HideEmptyServiceResults = HideEmptyServiceResultsToggle.IsOn;
+        _settings.EnableLocalDictionarySuggestions = EnableLocalDictionarySuggestionsToggle.IsOn;
+
+        // Apply startup setting to Windows registry
+        StartupService.SetEnabled(_settings.LaunchAtStartup);
+
+        // Save hotkey settings
+        _settings.ShowWindowHotkey = ShowHotkeyBox.Text;
+        _settings.TranslateSelectionHotkey = TranslateHotkeyBox.Text;
+        _settings.ShowMiniWindowHotkey = ShowMiniHotkeyBox.Text;
+        _settings.ShowFixedWindowHotkey = ShowFixedHotkeyBox.Text;
+        _settings.OcrTranslateHotkey = OcrTranslateHotkeyBox.Text;
+        _settings.SilentOcrHotkey = SilentOcrHotkeyBox.Text;
+        _settings.EnableShowWindowHotkey = ShowHotkeyEnabledToggle.IsOn;
+        _settings.EnableTranslateSelectionHotkey = TranslateHotkeyEnabledToggle.IsOn;
+        _settings.EnableShowMiniWindowHotkey = ShowMiniHotkeyEnabledToggle.IsOn;
+        _settings.EnableShowFixedWindowHotkey = ShowFixedHotkeyEnabledToggle.IsOn;
+        _settings.EnableOcrTranslateHotkey = OcrTranslateHotkeyEnabledToggle.IsOn;
+        _settings.EnableSilentOcrHotkey = SilentOcrHotkeyEnabledToggle.IsOn;
+
+        // Save enabled services for each window (from collections)
+        _settings.MainWindowEnabledServices = GetEnabledServicesFromCollection(_mainWindowServices);
+        _settings.MiniWindowEnabledServices = GetEnabledServicesFromCollection(_miniWindowServices);
+        _settings.FixedWindowEnabledServices = GetEnabledServicesFromCollection(_fixedWindowServices);
+
+        // Layout Detection settings
+
+        // Formula Detection
+
+        // Translation Cache
+        _settings.EnableTranslationCache = TranslationCacheToggle.IsOn;
+
+        // Custom Prompt
+        _settings.LongDocCustomPrompt = CustomPromptBox.Text?.Trim() ?? "";
+
+        // Save EnabledQuery settings for each window
+        _settings.MainWindowServiceEnabledQuery = GetEnabledQueryFromCollection(_mainWindowServices);
+        _settings.MiniWindowServiceEnabledQuery = GetEnabledQueryFromCollection(_miniWindowServices);
+        _settings.FixedWindowServiceEnabledQuery = GetEnabledQueryFromCollection(_fixedWindowServices);
+
+        // Validate that at least one service is enabled for each window (updates collection too)
+        EnsureDefaultServiceEnabled(_mainWindowServices, _settings.MainWindowEnabledServices);
+        EnsureDefaultServiceEnabled(_miniWindowServices, _settings.MiniWindowEnabledServices);
+        EnsureDefaultServiceEnabled(_fixedWindowServices, _settings.FixedWindowEnabledServices);
+
+        // Persist to storage
+        _settings.Save();
+        ResetServiceReorderModes();
+
+        // Reload hotkeys immediately
+        CrashDiagnostics.Log("[SettingsPage] Triggering hotkey reload");
+        var hotkeyFailures = App.HotkeyService?.ReloadHotkeys();
+
+        // Refresh window service results to pick up new EnabledQuery settings
+        MiniWindowService.Instance.RefreshServiceResults();
+        FixedWindowService.Instance.RefreshServiceResults();
+
+        // Refresh language combos in open windows to pick up SelectedLanguages changes
+        MiniWindowService.Instance.RefreshLanguageCombos();
+        FixedWindowService.Instance.RefreshLanguageCombos();
+
+        // If proxy settings changed, recreate manager with new proxy (includes service configuration)
+        // Otherwise, just reconfigure services with new settings (API keys, models, endpoints)
+        var proxyChanged = originalProxyEnabled != _settings.ProxyEnabled ||
+                           originalProxyUri != _settings.ProxyUri ||
+                           originalProxyBypassLocal != _settings.ProxyBypassLocal;
+        if (proxyChanged)
+        {
+            TranslationManagerService.Instance.ReconfigureProxy();
+        }
+        else
+        {
+            TranslationManagerService.Instance.ReconfigureServices();
+        }
+
+        // Apply always-on-top setting immediately
+        App.ApplyAlwaysOnTop(_settings.AlwaysOnTop);
+
+        // Apply appearance (result font size + button visibility) immediately (issue #172)
+        App.ApplyAppearance();
+
+        // Apply clipboard monitoring immediately
+        App.ApplyClipboardMonitoring(_settings.ClipboardMonitoring);
+        App.ApplyMouseSelectionTranslate(_settings.MouseSelectionTranslate);
+        App.ApplyHoverWordLookup();
+
+        // Hide the floating save button and reset unsaved changes flag
+        _hasUnsavedChanges = false;
+        SaveButton.Visibility = Visibility.Collapsed;
+
+        // Warn the user about any hotkeys that could not be registered
+        // (e.g. reserved by Windows or in use by another app).
+        if (EasydictConditions.ShouldShowHotkeyRegistrationWarnings &&
+            hotkeyFailures is { Count: > 0 })
+        {
+            var lines = hotkeyFailures
+                .Select(f => $"{loc.GetString(f.NameKey)}: {f.HotkeyString}")
+                .Distinct()
+                .ToList();
+
+            var failureDialog = new ContentDialog
+            {
+                Title = loc.GetString("HotkeyRegistrationFailedTitle"),
+                Content = loc.GetString("HotkeyRegistrationFailedMessage")
+                    + "\n\n"
+                    + string.Join("\n", lines),
+                CloseButtonText = loc.GetString("OK"),
+                XamlRoot = this.XamlRoot
+            };
+            await ShowDialogAsync(failureDialog);
+        }
+
+        // Win+Space is captured via a low-level keyboard hook that overrides the
+        // Windows input-language switcher; notify the user when they first pick it.
+        if (!hadWinSpaceHotkey && HasEnabledWinSpaceHotkey())
+        {
+            var winSpaceDialog = new ContentDialog
+            {
+                Title = loc.GetString("WinSpaceHotkeyWarningTitle"),
+                Content = loc.GetString("WinSpaceHotkeyWarningMessage"),
+                CloseButtonText = loc.GetString("OK"),
+                XamlRoot = this.XamlRoot
+            };
+            await ShowDialogAsync(winSpaceDialog);
+        }
+
+        return true;
+    }
 
     /// <summary>
     /// Shared handler for all hotkey AutoSuggestBoxes: offers autocomplete while
@@ -3695,6 +4651,26 @@ public sealed partial class SettingsPage : Page
         }
     }
 
+    /// <summary>
+    /// Refreshes the available Ollama models from the local server.
+    /// </summary>
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Settings] Failed to refresh Ollama models: {ex.Message}");
+            var loc = LocalizationService.Instance;
+            var errorDialog = new ContentDialog
+            {
+                Title = loc.GetString("CannotConnectToOllama"),
+                Content = loc.GetString("CannotConnectToOllamaMessage"),
+                CloseButtonText = loc.GetString("OK"),
+                XamlRoot = this.XamlRoot
+            };
+            await ShowDialogAsync(errorDialog);
+        }
+        finally
+        {
+        }
+    }
 
     /// <summary>
     /// Get list of enabled services from a collection.
@@ -4007,15 +4983,140 @@ public sealed partial class SettingsPage : Page
         }
     }
 
+    /// <summary>
+    /// Test DeepL configuration.
+    /// </summary>
+    private async void OnTestDeepL(object sender, RoutedEventArgs e)
+    {
+        if (!await ValidateDeepLQualityApiKeyAsync("TestFailedTitle"))
+        {
+            return;
+        }
 
+        await TestServiceAsync("deepl", service =>
+        {
+            if (service is DeepLService deepl)
+            {
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test OpenAI configuration.
+    /// </summary>
 
+    /// <summary>
+    /// Show or hide the "Detected: X" hint under the API Format combo based on
+    /// the current selection. The hint only appears in Auto mode after a
+    /// successful test has resolved a concrete format.
+    /// </summary>
+    private void OnOpenAIApiFormatChanged(object sender, SelectionChangedEventArgs e)
+    {
+        OnSettingChanged(sender, e);
 
+        if (!string.Equals(tag, "Auto", StringComparison.OrdinalIgnoreCase))
+        {
+            // Pinned modes: format is explicit, no detection result to surface.
+        }
+        // In Auto mode the label stays whatever it was — it's populated by a
+        // successful test in OnTestOpenAI.
+    }
 
+    private void UpdateOpenAIDetectedFormatText(OpenAIApiFormat detected)
+    {
+        if (detected == OpenAIApiFormat.Auto)
+        {
+            return;
+        }
 
+        var label = detected == OpenAIApiFormat.Responses
+            ? "Responses API"
+            : "Chat Completions API";
+    }
 
+    /// <summary>
+    /// Test DeepSeek configuration.
+    /// </summary>
+    private async void OnTestDeepSeek(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("deepseek", service =>
+        {
+            if (service is DeepSeekService deepseek)
+            {
+                deepseek.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test Groq configuration.
+    /// </summary>
+    private async void OnTestGroq(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("groq", service =>
+        {
+            if (service is GroqService groq)
+            {
+                groq.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test Zhipu configuration.
+    /// </summary>
+    private async void OnTestZhipu(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("zhipu", service =>
+        {
+            if (service is ZhipuService zhipu)
+            {
+                zhipu.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Test Kimi configuration.
+    /// </summary>
+    private async void OnTestKimi(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("kimi", service =>
+        {
+            if (service is KimiService kimi)
+            {
+                kimi.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Test GitHub Models configuration.
+    /// </summary>
+    private async void OnTestGitHubModels(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("github", service =>
+        {
+            if (service is GitHubModelsService github)
+            {
+                github.Configure(string.IsNullOrWhiteSpace(token) ? "" : token, model: model);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Test Gemini configuration.
+    /// </summary>
+    private async void OnTestGemini(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("gemini", service =>
+        {
+            if (service is GeminiService gemini)
+            {
+                gemini.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model);
+            }
+        });
+    }
 
     /// <summary>
     /// Test Custom OpenAI configuration.
@@ -4037,11 +5138,92 @@ public sealed partial class SettingsPage : Page
         }, TestCustomOpenAIButton, CustomOpenAIStatusText);
     }
 
+    /// <summary>
+    /// Test Ollama configuration.
+    /// </summary>
+    private async void OnTestOllama(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("ollama", service =>
+        {
+            if (service is OllamaService ollama)
+            {
+                ollama.Configure(
+                    string.IsNullOrWhiteSpace(endpoint) ? "http://localhost:11434/v1/chat/completions" : endpoint,
+                    model);
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test OpenRouter configuration.
+    /// </summary>
+    private async void OnTestOpenRouter(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("openrouter", service =>
+        {
+            if (service is OpenRouterService openRouter)
+            {
+                openRouter.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
+            }
+        });
+    }
+    /// <summary>
+    /// Test Doubao configuration.
+    /// </summary>
+    private async void OnTestDoubao(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("doubao", service =>
+        {
+            if (service is DoubaoService doubao)
+            {
+                doubao.Configure(
+                    string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey,
+                    string.IsNullOrWhiteSpace(endpoint) ? "https://ark.cn-beijing.volces.com/api/v3/responses" : endpoint,
+                    string.IsNullOrWhiteSpace(model) ? "doubao-seed-translation-250915" : model);
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test Caiyun configuration.
+    /// </summary>
+    private async void OnTestCaiyun(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("caiyun", service =>
+        {
+            if (service is CaiyunService caiyun)
+            {
+                caiyun.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey);
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test NiuTrans configuration.
+    /// </summary>
+    private async void OnTestNiuTrans(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("niutrans", service =>
+        {
+            if (service is NiuTransService niutrans)
+            {
+                niutrans.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey);
+            }
+        });
+    }
 
-
+    /// <summary>
+    /// Test Volcano Engine configuration.
+    /// </summary>
+    private async void OnTestVolcano(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("volcano", service =>
+        {
+            if (service is VolcanoService volcano)
+            {
+            }
+        });
+    }
 
     private async void OnClaudeCodeExpanding(Expander sender, ExpanderExpandingEventArgs e)
     {
@@ -4071,17 +5253,91 @@ public sealed partial class SettingsPage : Page
     }
 
 
+    private async void OnBrowseClaudeCodeExecutable(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var mainWindow = App.MainWindow;
+            if (mainWindow is null) return;
 
+            var path = await Services.Storage.PickerFactory.PickSingleFileAsync(
+                mainWindow,
+                Services.Storage.PickerFactory.SettingsIdentifiers.ClaudeCodeExecutable,
+                [".exe", ".cmd", ".bat", ".com"]);
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowAgentCliErrorAsync(ex);
+        }
+    }
 
+    private async void OnDeepSeekExpanding(Expander sender, ExpanderExpandingEventArgs e)
+    {
+        if (_hasRefreshedDeepSeekModels) return;
 
+        _hasRefreshedDeepSeekModels = true;
+    }
 
+    private async void OnRefreshDeepSeekModels(object sender, RoutedEventArgs e)
+    {
+    }
 
+    private async Task<IReadOnlyList<ModelCatalogEntry>> FetchDeepSeekModelsAsync()
+    {
+        using var handle = TranslationManagerService.Instance.AcquireHandle();
+        var service = new DeepSeekService(handle.Manager.SharedHttpClient);
+        return await service.FetchModelsAsync();
+    }
 
+    private async void OnZhipuExpanding(Expander sender, ExpanderExpandingEventArgs e)
+    {
+        if (_hasRefreshedZhipuModels) return;
 
+        _hasRefreshedZhipuModels = true;
+    }
 
+    private async void OnRefreshZhipuModels(object sender, RoutedEventArgs e)
+    {
+    }
 
+    private async Task<IReadOnlyList<ModelCatalogEntry>> FetchZhipuModelsAsync()
+    {
+        using var handle = TranslationManagerService.Instance.AcquireHandle();
+        var service = new ZhipuService(handle.Manager.SharedHttpClient);
+        return await service.FetchModelsAsync();
+    }
 
+    private async void OnKimiExpanding(Expander sender, ExpanderExpandingEventArgs e)
+    {
+        if (_hasRefreshedKimiModels) return;
 
+        _hasRefreshedKimiModels = true;
+    }
+
+    private async void OnRefreshKimiModels(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private async Task<IReadOnlyList<ModelCatalogEntry>> FetchKimiModelsAsync()
+    {
+        using var handle = TranslationManagerService.Instance.AcquireHandle();
+        var service = new KimiService(handle.Manager.SharedHttpClient);
+        return await service.FetchModelsAsync();
+    }
+
+    private async void OnOpenRouterExpanding(Expander sender, ExpanderExpandingEventArgs e)
+    {
+        if (_hasRefreshedOpenRouterModels) return;
+
+        _hasRefreshedOpenRouterModels = true;
+    }
+
+    private async void OnRefreshOpenRouterModels(object sender, RoutedEventArgs e)
+    {
+    }
 
     private static async Task<IReadOnlyList<ModelCatalogEntry>> FetchOpenRouterModelsAsync()
     {
@@ -4218,8 +5474,74 @@ public sealed partial class SettingsPage : Page
             : exception.Message;
     }
 
+    /// <summary>
+    /// Test Claude Code CLI configuration. The probe instance is force-enabled
+    /// so the test exercises the CLI regardless of the toggle state.
+    /// </summary>
+    private async void OnTestClaudeCode(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("claude-code", service =>
+        {
+            if (service is ClaudeCodeService claudeCode)
+            {
+            }
+        });
+    }
 
+    /// <summary>
+    /// Test Codex CLI configuration. The probe instance is force-enabled
+    /// so the test exercises the CLI regardless of the toggle state.
+    /// </summary>
+    private async void OnTestCodex(object sender, RoutedEventArgs e)
+    {
+        await TestServiceAsync("codex", service =>
+        {
+            if (service is CodexCliService codex)
+            {
+            }
+        });
+    }
 
+    /// <summary>
+    /// Risk acknowledgment shown when enabling an agent CLI service (Claude
+    /// Code / Codex), mirroring the upstream macOS gate: translation queries
+    /// consume the user's subscription quota and require a signed-in CLI.
+    /// Reverts the toggle if the user cancels.
+    /// </summary>
+    private async void OnAgentCliEnabledToggled(object sender, RoutedEventArgs e)
+    {
+        if (_isLoading || _suppressAgentCliToggleDialog) return;
+        if (sender is not ToggleSwitch toggle || !toggle.IsOn) return;
+
+        // Only prompt when moving from persisted-off to on.
+
+        var loc = LocalizationService.Instance;
+        var dialog = new ContentDialog
+        {
+            Title = loc.GetString("AgentCliRiskTitle"),
+            Content = loc.GetString("AgentCliRiskMessage"),
+            PrimaryButtonText = loc.GetString("AgentCliRiskConfirm"),
+            CloseButtonText = loc.GetString("Cancel"),
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot
+        };
+
+        var result = await ShowDialogAsync(dialog);
+        if (result != ContentDialogResult.Primary)
+        {
+            // Reverting IsOn re-fires Toggled; the suppress flag skips the
+            // dialog while OnSettingChanged still recomputes the dirty state.
+            _suppressAgentCliToggleDialog = true;
+            try
+            {
+                toggle.IsOn = false;
+            }
+            finally
+            {
+                _suppressAgentCliToggleDialog = false;
+            }
+        }
+    }
 
     #region Layout Detection
     private void UpdateOnnxModelStatus()
