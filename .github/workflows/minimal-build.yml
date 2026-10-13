@@ -3,11 +3,15 @@ name: Minimal Build
 # Builds the trimmed-down "selection translate only" variant.
 #
 # Compared with the upstream release pipeline this publishes exactly ONE
-# self-contained application instead of six:
+# application instead of six:
 #   * the three worker EXEs (ocr / longdoc / localai) are not built or copied
 #   * easydict-native-bridge.exe and BrowserHostRegistrar.exe are not published
 #   * the in-process long-document fallback is off, which also drops the
 #     PdfPig / MuPDF.NET / PdfSharpCore / ONNX Runtime payloads
+#
+# Two flavours are produced:
+#   * self-contained    - no prerequisites, carries the whole .NET runtime
+#   * framework-dependent - ~10x smaller, needs .NET 8 Desktop Runtime installed
 #
 # The hover-to-translate change lives in Views/PopButtonWindow.xaml.cs.
 
@@ -48,7 +52,7 @@ jobs:
           -p:PublishWorkerOutputs=false
           -p:EnableInProcLongDocFallback=false
 
-      - name: Publish WinUI app (minimal)
+      - name: Publish WinUI app (self-contained)
         working-directory: dotnet
         run: |
           dotnet publish src/Easydict.WinUI/Easydict.WinUI.csproj `
@@ -64,40 +68,100 @@ jobs:
             -p:EnableGitHubUpdateCheck=false `
             -p:PublishTrimmed=false
 
-      - name: Report published size
+      # Gets the dependency facts needed to decide what is safe to strip. A
+      # managed assembly records its references as plain assembly-name strings
+      # in its metadata, so scanning for the literal name tells us who would
+      # break if that file went away.
+      - name: Audit assembly references
         working-directory: dotnet
         shell: pwsh
         run: |
           $root = (Resolve-Path ./publish/win-x64).Path
-          $files = Get-ChildItem $root -Recurse -File
-          $sum = ($files | Measure-Object -Property Length -Sum).Sum
-          Write-Host "FILE COUNT : $($files.Count)"
-          Write-Host "TOTAL SIZE : $([math]::Round($sum/1MB,1)) MB"
-          Write-Host ""
-          Write-Host "Top 15 largest files:"
-          $files |
-            Sort-Object Length -Descending |
-            Select-Object -First 15 |
-            ForEach-Object { "{0,9:N0} KB  {1}" -f ($_.Length/1KB), $_.FullName.Replace($root, '') }
-          Write-Host ""
-          if (Test-Path (Join-Path $root 'workers')) {
-            Write-Host "::error::workers directory is still present - the trim did not take effect"
-          } else {
-            Write-Host "OK: no workers directory"
+          $dlls = Get-ChildItem $root -Filter *.dll -Recurse
+          $targets = @(
+            'PresentationFramework', 'PresentationCore', 'PresentationUI', 'ReachFramework',
+            'System.Windows.Controls.Ribbon', 'System.Windows.Forms', 'System.Windows.Forms.Primitives',
+            'System.Windows.Forms.Design', 'System.Design', 'System.Drawing.Design',
+            'System.Xaml', 'WindowsBase', 'UIAutomationClient', 'UIAutomationTypes',
+            'System.Drawing.Common', 'Jint', 'BouncyCastle.Cryptography', 'Microsoft.Windows.SDK.NET'
+          )
+
+          $blobs = @{}
+          foreach ($d in $dlls) {
+            $blobs[$d.Name] = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes($d.FullName))
           }
 
-      - name: Create ZIP
+          Write-Host "assembly                          size(KB)  referenced by (excluding itself)"
+          Write-Host "--------------------------------------------------------------------------------"
+          foreach ($t in $targets) {
+            $self = $dlls | Where-Object { $_.BaseName -eq $t } | Select-Object -First 1
+            $kb = if ($self) { [math]::Round($self.Length/1KB) } else { '-' }
+            $refs = @()
+            foreach ($k in $blobs.Keys) {
+              if ($k -eq "$t.dll") { continue }
+              if ($blobs[$k].Contains($t)) { $refs += $k }
+            }
+            $list = if ($refs.Count -eq 0) { '(nobody)' } else { $refs -join ', ' }
+            Write-Host ("{0,-32} {1,8}  {2}" -f $t, $kb, $list)
+          }
+
+      - name: Publish WinUI app (framework-dependent)
+        working-directory: dotnet
+        run: |
+          dotnet publish src/Easydict.WinUI/Easydict.WinUI.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained false `
+            --no-restore `
+            --output ./publish/win-x64-fxdep `
+            -p:Platform=x64 `
+            -p:BuildWorkerOutputs=false `
+            -p:PublishWorkerOutputs=false `
+            -p:EnableInProcLongDocFallback=false `
+            -p:EnableGitHubUpdateCheck=false `
+            -p:PublishTrimmed=false
+
+      - name: Report sizes
+        working-directory: dotnet
+        shell: pwsh
+        run: |
+          foreach ($variant in @('win-x64', 'win-x64-fxdep')) {
+            $root = (Resolve-Path "./publish/$variant").Path
+            $files = Get-ChildItem $root -Recurse -File
+            $sum = ($files | Measure-Object -Property Length -Sum).Sum
+            Write-Host "=== $variant ==="
+            Write-Host "FILE COUNT : $($files.Count)"
+            Write-Host "TOTAL SIZE : $([math]::Round($sum/1MB,1)) MB"
+            Write-Host "Top 12 largest:"
+            $files |
+              Sort-Object Length -Descending |
+              Select-Object -First 12 |
+              ForEach-Object { "  {0,9:N0} KB  {1}" -f ($_.Length/1KB), $_.FullName.Replace($root, '') }
+            if (Test-Path (Join-Path $root 'workers')) {
+              Write-Host "::error::$variant still contains the workers directory - the trim did not take effect"
+            } else {
+              Write-Host "OK: no workers directory"
+            }
+            Write-Host ""
+          }
+
+      - name: Create ZIPs
         shell: pwsh
         run: |
           Compress-Archive -Path ./dotnet/publish/win-x64/* -DestinationPath ./easydict-minimal-win-x64.zip -CompressionLevel Optimal
-          $z = Get-Item ./easydict-minimal-win-x64.zip
-          Write-Host "ZIP size: $([math]::Round($z.Length/1MB,1)) MB"
+          Compress-Archive -Path ./dotnet/publish/win-x64-fxdep/* -DestinationPath ./easydict-minimal-win-x64-fxdep.zip -CompressionLevel Optimal
+          foreach ($z in @('easydict-minimal-win-x64.zip', 'easydict-minimal-win-x64-fxdep.zip')) {
+            $f = Get-Item "./$z"
+            Write-Host "$z : $([math]::Round($f.Length/1MB,1)) MB"
+          }
 
-      - name: Upload artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: easydict-minimal-win-x64
-          path: easydict-minimal-win-x64.zip
+          name: easydict-minimal
+          path: |
+            easydict-minimal-win-x64.zip
+            easydict-minimal-win-x64-fxdep.zip
           retention-days: 14
 
       # Publishes a fixed release tag so there is always one stable, login-free
@@ -108,7 +172,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          $notes = 'Trimmed fork: select text anywhere, rest the pointer on the floating button for about 0.2 s, get the translation.' + "`n`n" +
+                   'Removed: the OCR / long-document / local-AI workers, the browser bridge and registrar, Bob plugins, and 21 of the 23 translation services (Google Translate plus a custom OpenAI-compatible service remain).' + "`n`n" +
+                   'Two downloads:' + "`n" +
+                   '* easydict-minimal-win-x64.zip - self-contained, no prerequisites, unpack and run Easydict.WinUI.exe' + "`n" +
+                   '* easydict-minimal-win-x64-fxdep.zip - much smaller, needs the .NET 8 Desktop Runtime installed once'
+
           gh release delete minimal-latest --yes --cleanup-tag 2>$null
-          gh release create minimal-latest ./easydict-minimal-win-x64.zip `
+          gh release create minimal-latest ./easydict-minimal-win-x64.zip ./easydict-minimal-win-x64-fxdep.zip `
             --title "Minimal build (selection translate, hover to trigger)" `
-            --notes "Trimmed fork: select text anywhere, rest the pointer on the floating button, get the translation. No workers, no OCR, no long-document translation, no local AI, no Bob plugins, Google Translate + Custom OpenAI only. Unpack the zip and run Easydict.WinUI.exe."
+            --notes $notes
