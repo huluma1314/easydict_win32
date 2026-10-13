@@ -20,6 +20,9 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -96,3 +99,16 @@ jobs:
           name: easydict-minimal-win-x64
           path: easydict-minimal-win-x64.zip
           retention-days: 14
+
+      # Publishes a fixed release tag so there is always one stable, login-free
+      # download URL for the newest build.
+      - name: Publish "minimal-latest" release
+        if: github.ref == 'refs/heads/master'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete minimal-latest --yes --cleanup-tag 2>$null
+          gh release create minimal-latest ./easydict-minimal-win-x64.zip `
+            --title "Minimal build (selection translate, hover to trigger)" `
+            --notes "Trimmed fork: select text anywhere, rest the pointer on the floating button, get the translation. No workers, no OCR, no long-document translation, no local AI, no Bob plugins, Google Translate + Custom OpenAI only. Unpack the zip and run Easydict.WinUI.exe."
