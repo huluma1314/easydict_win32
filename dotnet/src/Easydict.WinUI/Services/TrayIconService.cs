@@ -268,7 +268,6 @@ public sealed class TrayIconService : IDisposable
         menu.Items.Add(new MenuFlyoutSeparator());
 
         // Browser support submenu
-        menu.Items.Add(CreateBrowserSupportSubmenu());
         UpdateBrowserSupportMenuStates();
 
         var settingsItem = new MenuFlyoutItem { Text = L("TraySettings") };

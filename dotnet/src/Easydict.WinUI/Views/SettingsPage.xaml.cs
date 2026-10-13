@@ -247,7 +247,6 @@ public sealed partial class SettingsPage : Page
         new() { Id = SettingsTabId.Services, IconGlyph = "\uE90F" },
         new() { Id = SettingsTabId.Views, IconGlyph = "\uE8A7" },
         new() { Id = SettingsTabId.Hotkeys, IconGlyph = "\uE765" },
-        new() { Id = SettingsTabId.Plugins, IconGlyph = "\uEA86" },
         new() { Id = SettingsTabId.Advanced, IconGlyph = "\uE771" },
         new() { Id = SettingsTabId.Labs, IconGlyph = "\uEA80" },
         new() { Id = SettingsTabId.Language, IconGlyph = "\uE774" },
@@ -1139,7 +1138,6 @@ public sealed partial class SettingsPage : Page
             ViewsTabContent.Visibility = tabId == SettingsTabId.Views ? Visibility.Visible : Visibility.Collapsed;
         }
         HotkeysTabContent.Visibility = tabId == SettingsTabId.Hotkeys ? Visibility.Visible : Visibility.Collapsed;
-        PluginsTabContent.Visibility = tabId == SettingsTabId.Plugins ? Visibility.Visible : Visibility.Collapsed;
         AdvancedTabContent.Visibility = tabId == SettingsTabId.Advanced ? Visibility.Visible : Visibility.Collapsed;
         LabsTabContent.Visibility = tabId == SettingsTabId.Labs ? Visibility.Visible : Visibility.Collapsed;
         LanguageTabContent.Visibility = tabId == SettingsTabId.Language ? Visibility.Visible : Visibility.Collapsed;
@@ -1357,68 +1355,15 @@ public sealed partial class SettingsPage : Page
             ServiceConfigurationDescriptionText.Text = loc.GetString("ServiceConfigurationDescription");
 
         // Local AI configuration
-        if (WindowsLocalAITitleText != null)
-            WindowsLocalAITitleText.Text = loc.GetString(LocalAIResources.UiKeys.Title);
-        if (LocalAIProviderLabelText != null)
-            LocalAIProviderLabelText.Text = loc.GetString(LocalAIResources.UiKeys.ProviderLabel);
-        if (LocalAIProviderCombo != null)
-            AutomationProperties.SetName(LocalAIProviderCombo, loc.GetString(LocalAIResources.UiKeys.ProviderAutomationName));
-        if (LocalAIProviderAutoItem != null)
-            LocalAIProviderAutoItem.Content = loc.GetString(LocalAIResources.ProviderKeys.Auto);
-        if (LocalAIProviderWindowsAILabelText != null)
-            LocalAIProviderWindowsAILabelText.Text = loc.GetString(LocalAIResources.ProviderKeys.WindowsAI);
-        if (LocalAIProviderFoundryLocalLabelText != null)
-            LocalAIProviderFoundryLocalLabelText.Text = loc.GetString(LocalAIResources.ProviderKeys.FoundryLocal);
-        if (LocalAIProviderOpenVINOLabelText != null)
-            LocalAIProviderOpenVINOLabelText.Text = loc.GetString(LocalAIResources.ProviderKeys.OpenVINO);
 
         var windowsAIRating = loc.GetString(LocalAIResources.RatingKeys.WindowsAI);
         var windowsAIRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.WindowsAI);
-        SetLocalAiRating(LocalAIProviderWindowsAIRatingText, windowsAIRating, windowsAIRatingTip);
-        SetLocalAiRating(WindowsLocalAISectionRatingText, windowsAIRating, windowsAIRatingTip);
 
         var foundryLocalRating = loc.GetString(LocalAIResources.RatingKeys.FoundryLocal);
         var foundryLocalRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.FoundryLocal);
-        SetLocalAiRating(LocalAIProviderFoundryLocalRatingText, foundryLocalRating, foundryLocalRatingTip);
-        SetLocalAiRating(FoundryLocalRatingText, foundryLocalRating, foundryLocalRatingTip);
 
         var openVinoRating = loc.GetString(LocalAIResources.RatingKeys.OpenVINO);
         var openVinoRatingTip = loc.GetString(LocalAIResources.RatingTooltipKeys.OpenVINO);
-        SetLocalAiRating(LocalAIProviderOpenVINORatingText, openVinoRating, openVinoRatingTip);
-        SetLocalAiRating(OpenVinoRatingText, openVinoRating, openVinoRatingTip);
-        if (WindowsLocalAIDescriptionText != null)
-            UpdateLocalAIProviderDescription();
-        if (WindowsLocalAISectionTitleText != null)
-            WindowsLocalAISectionTitleText.Text = loc.GetString(LocalAIResources.UiKeys.WindowsAISectionTitle);
-        if (WindowsLocalAIPrepareButton != null)
-            WindowsLocalAIPrepareButton.Content = loc.GetString(PhiSilicaResources.UiKeys.PrepareButton);
-        if (WindowsLocalAIWindowsUpdateLink != null)
-        {
-            WindowsLocalAIWindowsUpdateLink.Content = loc.GetString(PhiSilicaResources.ProgressKeys.WindowsUpdateLink);
-            WindowsLocalAIWindowsUpdateLink.NavigateUri = new Uri("ms-settings:windowsupdate");
-        }
-        if (FoundryLocalTitleText != null)
-            FoundryLocalTitleText.Text = loc.GetString(FoundryLocalResources.UiKeys.ConfigTitle);
-        if (FoundryLocalEndpointBox != null)
-        {
-            FoundryLocalEndpointBox.Header = loc.GetString(FoundryLocalResources.UiKeys.EndpointLabel);
-            FoundryLocalEndpointBox.PlaceholderText = loc.GetString(FoundryLocalResources.UiKeys.EndpointPlaceholder);
-        }
-        if (FoundryLocalModelBox != null)
-            FoundryLocalModelBox.Header = loc.GetString(FoundryLocalResources.UiKeys.ModelLabel);
-        if (FoundryLocalStartButton != null)
-            FoundryLocalStartButton.Content = loc.GetString(FoundryLocalResources.UiKeys.StartButton);
-        if (FoundryLocalDescriptionText != null)
-            FoundryLocalDescriptionText.Text = loc.GetString(FoundryLocalResources.UiKeys.ConfigDescription);
-        if (FoundryLocalInstallLink != null)
-        {
-            FoundryLocalInstallLink.Content = loc.GetString(FoundryLocalResources.UiKeys.DocsLinkText);
-            FoundryLocalInstallLink.NavigateUri = new Uri(FoundryLocalResources.InstallDocumentationUrl);
-        }
-        if (OpenVinoTitleText != null)
-            OpenVinoTitleText.Text = loc.GetString(OpenVinoResources.UiKeys.ConfigTitle);
-        if (OpenVinoDescriptionText != null)
-            OpenVinoDescriptionText.Text = loc.GetString(OpenVinoResources.UiKeys.ConfigDescription);
 
         // Service configuration controls (API Keys, Endpoints, Models, etc.)
         DeepLFreeCheck.Content = loc.GetString("DeepLFreeOption");
@@ -1456,14 +1401,6 @@ public sealed partial class SettingsPage : Page
         OpenRouterGetKeyLink.Content = loc.GetString("GetApiKeyLink");
         OpenRouterGetKeyLink.NavigateUri = new Uri(OpenRouterService.SignUpUrl);
         RefreshOpenRouterModelsButton.Content = loc.GetString("Refresh");
-        OrcaRouterKeyHeaderText.Text = loc.GetString("ApiKey");
-        OrcaRouterModelCombo.Header = loc.GetString("Model");
-        OrcaRouterDescriptionText.Text = loc.GetString("OrcaRouterDescription");
-        OrcaRouterFreeModelsBadgeText.Text = loc.GetString("FreeModelsBadge");
-        OrcaRouterGetKeyLink.Content = loc.GetString("GetApiKeyReferralLink");
-        OrcaRouterGetKeyLink.NavigateUri = new Uri(OrcaRouterService.ReferralUrl);
-        RefreshOrcaRouterModelsButton.Content = loc.GetString("Refresh");
-        ApplyOrcaRouterSignInLocalization(loc);
         DoubaoKeyHeaderText.Text = loc.GetString("ApiKey");
         DoubaoEndpointBox.Header = loc.GetString("EndpointOptional");
         DoubaoModelBox.Header = loc.GetString("Model");
@@ -1511,7 +1448,6 @@ public sealed partial class SettingsPage : Page
         TestCustomOpenAIButton.Content = testButtonText;
         TestOllamaButton.Content = testButtonText;
         TestOpenRouterButton.Content = testButtonText;
-        TestOrcaRouterButton.Content = testButtonText;
         TestDoubaoButton.Content = testButtonText;
         TestCaiyunButton.Content = testButtonText;
         TestNiuTransButton.Content = testButtonText;
@@ -1526,24 +1462,8 @@ public sealed partial class SettingsPage : Page
             FreeServicesDescriptionText.Text = loc.GetString("FreeServicesDescription");
 
         // CJK Font section
-        if (CjkFontHeaderText != null)
-            CjkFontHeaderText.Text = loc.GetString("CjkFont_Title");
-        if (CjkFontDescriptionText != null)
-            CjkFontDescriptionText.Text = loc.GetString("CjkFont_Description");
-        CjkFontDownloadButton.Content = loc.GetString("CjkFont_Download");
-        CjkFontDeleteButton.Content = loc.GetString("CjkFont_Delete");
-        if (CjkFontNoteText != null)
-            CjkFontNoteText.Text = loc.GetString("CjkFont_Note");
 
         // Formula Detection section
-        if (FormulaDetectionHeaderText != null)
-            FormulaDetectionHeaderText.Text = loc.GetString("FormulaDetection_Title");
-        if (FormulaDetectionDescriptionText != null)
-            FormulaDetectionDescriptionText.Text = loc.GetString("FormulaDetection_Description");
-        FormulaFontPatternBox.Header = loc.GetString("FormulaDetection_FontPattern");
-        FormulaCharPatternBox.Header = loc.GetString("FormulaDetection_CharPattern");
-        if (FormulaDetectionNoteText != null)
-            FormulaDetectionNoteText.Text = loc.GetString("FormulaDetection_Note");
 
         // Translation Cache section
         if (TranslationCacheHeaderText != null)
@@ -1755,7 +1675,6 @@ public sealed partial class SettingsPage : Page
         OcrEngineCombo.Header = loc.GetString("OcrEngine");
         OcrEngineNativeItem.Content = loc.GetString("OcrEngineNative");
         OcrEngineCustomApiItem.Content = loc.GetString("OcrEngineCustomApi");
-        OcrEnginePpOcrV6Item.Content = loc.GetString("PpOcrV6EngineLocal");
         OcrApiKeyHeaderText.Text = loc.GetString("OcrApiKey");
         OcrEndpointBox.Header = loc.GetString("OcrEndpoint");
         OcrModelBox.Header = loc.GetString("OcrModel");
@@ -1764,13 +1683,6 @@ public sealed partial class SettingsPage : Page
         OcrEnableThinkingDescriptionText.Text = loc.GetString("OcrEnableThinkingDescription");
         TestOcrConnectionButton.Content = loc.GetString("TestOcrConnection");
         OcrTestStatusBox.Header = loc.GetString("OcrTestResult");
-        PpOcrV6ModelCombo.Header = loc.GetString("PpOcrV6ModelLabel");
-        PpOcrV6DownloadButton.Content = loc.GetString("PpOcrV6ActionDownload");
-        PpOcrV6ThreadCountBox.Header = loc.GetString("PpOcrV6CpuThreads");
-        PpOcrV6GpuToggle.Header = loc.GetString("PpOcrV6UseGpu");
-        PpOcrV6FallbackToggle.Header = loc.GetString("PpOcrV6Fallback");
-        PpOcrV6TestButton.Content = loc.GetString("PpOcrV6TestButton");
-        PpOcrV6TestStatusBox.Header = loc.GetString("OcrTestResult");
     }
 
     private void ApplyPasswordRevealLocalization(LocalizationService loc)
@@ -1793,7 +1705,6 @@ public sealed partial class SettingsPage : Page
         yield return GeminiKeyRevealButton;
         yield return CustomOpenAIKeyRevealButton;
         yield return OpenRouterKeyRevealButton;
-        yield return OrcaRouterKeyRevealButton;
         yield return DoubaoKeyRevealButton;
         yield return CaiyunKeyRevealButton;
         yield return NiuTransKeyRevealButton;
@@ -1956,16 +1867,6 @@ public sealed partial class SettingsPage : Page
 
     private void ApplyLayoutDetectionLocalization(LocalizationService loc)
     {
-        LayoutDetectionHeaderText.Text = loc.GetString("LayoutDetection_Title");
-        LayoutDetectionDescriptionText.Text = loc.GetString("LayoutDetection_Description");
-        LayoutDetectionModeCombo.Header = loc.GetString("LayoutDetection_DetectionMode");
-        LayoutDetectionAutoItem.Content = loc.GetString("LayoutDetection_Auto");
-        LayoutDetectionOnnxItem.Content = loc.GetString("LayoutDetection_OnnxLocal");
-        LayoutDetectionHeuristicItem.Content = loc.GetString("LayoutDetection_Heuristic");
-        DownloadOnnxModelButton.Content = loc.GetString("LayoutDetection_DownloadModel");
-        DeleteOnnxModelButton.Content = loc.GetString("DeleteOnnxModel");
-        VisionLayoutServiceCombo.Header = loc.GetString("LayoutDetection_VisionService");
-        VisionLLMDescriptionText.Text = loc.GetString("VisionLLMDescription");
     }
 
     private void UpdateSettingsTabLabels(LocalizationService loc)
@@ -2286,7 +2187,6 @@ public sealed partial class SettingsPage : Page
 
         try
         {
-            _ppOcrV6DownloadCts?.Cancel();
             _lifetimeCts.Cancel();
         }
         catch (ObjectDisposedException)
@@ -2303,10 +2203,6 @@ public sealed partial class SettingsPage : Page
         UnregisterPasswordTailHints();
         UnregisterChangeHandlers();
         UnregisterLanguageCheckboxHandlers();
-        TeardownPhiSilicaPanel();
-        TeardownFoundryLocalPanel();
-        TeardownOpenVinoPanel();
-        TeardownOrcaRouterSignIn();
         HideSettingsTabSwitchProgress();
 
         try { _currentDialog?.Hide(); } catch (COMException) { }
@@ -2319,7 +2215,6 @@ public sealed partial class SettingsPage : Page
         ImportedMdxConfigPanel.Children.Clear();
         _mdxCredentialFields.Clear();
 
-        InstalledBobPluginsConfigPanel.Children.Clear();
         _bobOptionFields.Clear();
 
         _mainWindowServices.Clear();
@@ -2353,7 +2248,6 @@ public sealed partial class SettingsPage : Page
         OpenAIApiFormatCombo.SelectionChanged += OnOpenAIApiFormatChanged;
         OllamaModelCombo.SelectionChanged += OnSettingChanged;
         OpenRouterModelCombo.SelectionChanged += OnSettingChanged;
-        OrcaRouterModelCombo.SelectionChanged += OnSettingChanged;
         DeepSeekModelCombo.SelectionChanged += OnSettingChanged;
         GroqModelCombo.SelectionChanged += OnSettingChanged;
         ZhipuModelCombo.SelectionChanged += OnSettingChanged;
@@ -2398,8 +2292,6 @@ public sealed partial class SettingsPage : Page
         OpenAIKeyBox.PasswordChanged += OnSettingChanged;
         OpenAIEndpointBox.TextChanged += OnSettingChanged;
         OllamaEndpointBox.TextChanged += OnSettingChanged;
-        FoundryLocalEndpointBox.TextChanged += OnSettingChanged;
-        FoundryLocalModelBox.TextChanged += OnSettingChanged;
         ProxyUriBox.TextChanged += OnSettingChanged;
         ShowHotkeyBox.TextChanged += OnSettingChanged;
         TranslateHotkeyBox.TextChanged += OnSettingChanged;
@@ -2431,7 +2323,6 @@ public sealed partial class SettingsPage : Page
         CustomOpenAIKeyBox.PasswordChanged += OnSettingChanged;
         CustomOpenAIModelBox.TextChanged += OnSettingChanged;
         OpenRouterKeyBox.PasswordChanged += OnSettingChanged;
-        OrcaRouterKeyBox.PasswordChanged += OnSettingChanged;
         DoubaoKeyBox.PasswordChanged += OnSettingChanged;
         DoubaoEndpointBox.TextChanged += OnSettingChanged;
         DoubaoModelBox.TextChanged += OnSettingChanged;
@@ -2456,8 +2347,6 @@ public sealed partial class SettingsPage : Page
         CodexReasoningEffortCombo.SelectionChanged += OnSettingChanged;
 
         // Layout detection changes
-        LayoutDetectionModeCombo.SelectionChanged += OnLayoutDetectionModeChanged;
-        VisionLayoutServiceCombo.SelectionChanged += OnSettingChanged;
 
         // CheckBox changes
         DeepLFreeCheck.Checked += OnDeepLModeChanged;
@@ -2485,7 +2374,6 @@ public sealed partial class SettingsPage : Page
         OpenAIApiFormatCombo.SelectionChanged -= OnOpenAIApiFormatChanged;
         OllamaModelCombo.SelectionChanged -= OnSettingChanged;
         OpenRouterModelCombo.SelectionChanged -= OnSettingChanged;
-        OrcaRouterModelCombo.SelectionChanged -= OnSettingChanged;
         DeepSeekModelCombo.SelectionChanged -= OnSettingChanged;
         GroqModelCombo.SelectionChanged -= OnSettingChanged;
         ZhipuModelCombo.SelectionChanged -= OnSettingChanged;
@@ -2528,8 +2416,6 @@ public sealed partial class SettingsPage : Page
         OpenAIKeyBox.PasswordChanged -= OnSettingChanged;
         OpenAIEndpointBox.TextChanged -= OnSettingChanged;
         OllamaEndpointBox.TextChanged -= OnSettingChanged;
-        FoundryLocalEndpointBox.TextChanged -= OnSettingChanged;
-        FoundryLocalModelBox.TextChanged -= OnSettingChanged;
         ProxyUriBox.TextChanged -= OnSettingChanged;
         ShowHotkeyBox.TextChanged -= OnSettingChanged;
         TranslateHotkeyBox.TextChanged -= OnSettingChanged;
@@ -2560,7 +2446,6 @@ public sealed partial class SettingsPage : Page
         CustomOpenAIKeyBox.PasswordChanged -= OnSettingChanged;
         CustomOpenAIModelBox.TextChanged -= OnSettingChanged;
         OpenRouterKeyBox.PasswordChanged -= OnSettingChanged;
-        OrcaRouterKeyBox.PasswordChanged -= OnSettingChanged;
         DoubaoKeyBox.PasswordChanged -= OnSettingChanged;
         DoubaoEndpointBox.TextChanged -= OnSettingChanged;
         DoubaoModelBox.TextChanged -= OnSettingChanged;
@@ -2583,8 +2468,6 @@ public sealed partial class SettingsPage : Page
         CodexModelCombo.LostFocus -= OnSettingChanged;
         CodexReasoningEffortCombo.SelectionChanged -= OnSettingChanged;
 
-        LayoutDetectionModeCombo.SelectionChanged -= OnLayoutDetectionModeChanged;
-        VisionLayoutServiceCombo.SelectionChanged -= OnSettingChanged;
 
         DeepLFreeCheck.Checked -= OnDeepLModeChanged;
         DeepLFreeCheck.Unchecked -= OnDeepLModeChanged;
@@ -2806,10 +2689,6 @@ public sealed partial class SettingsPage : Page
             return false;
         }
 
-        if (ReferenceEquals(sender, LocalAIProviderCombo))
-        {
-            return !SameSetting(GetSelectedTag(LocalAIProviderCombo) ?? "Auto", _settings.LocalAIProvider);
-        }
 
         if (ReferenceEquals(sender, AppThemeCombo))
         {
@@ -2851,16 +2730,7 @@ public sealed partial class SettingsPage : Page
             return AutoSelectTargetToggle.IsOn != _settings.AutoSelectTargetLanguage;
         }
 
-        if (ReferenceEquals(sender, FoundryLocalEndpointBox))
-        {
-            return !SameSetting(FoundryLocalEndpointBox.Text?.Trim() ?? "", _settings.FoundryLocalEndpoint);
-        }
 
-        if (ReferenceEquals(sender, FoundryLocalModelBox))
-        {
-            var model = FoundryLocalModelBox.Text?.Trim();
-            return !SameSetting(string.IsNullOrWhiteSpace(model) ? FoundryLocalService.DefaultModel : model, _settings.FoundryLocalModel);
-        }
 
         if (sender is ServiceCheckItem)
         {
@@ -2891,7 +2761,6 @@ public sealed partial class SettingsPage : Page
         var openAIEndpoint = OpenAIEndpointBox.Text?.Trim();
         var customModel = CustomOpenAIModelBox.Text?.Trim();
         var ollamaEndpoint = OllamaEndpointBox.Text?.Trim();
-        var foundryLocalModel = FoundryLocalModelBox.Text?.Trim();
         var doubaoEndpoint = DoubaoEndpointBox.Text?.Trim();
         var doubaoModel = DoubaoModelBox.Text?.Trim();
 
@@ -2920,13 +2789,9 @@ public sealed partial class SettingsPage : Page
             || !SameSetting(string.IsNullOrWhiteSpace(customModel) ? "gpt-3.5-turbo" : customModel, _settings.CustomOpenAIModel)
             || !SameSetting(string.IsNullOrWhiteSpace(ollamaEndpoint) ? "http://localhost:11434/v1/chat/completions" : ollamaEndpoint, _settings.OllamaEndpoint)
             || !SameSetting(OllamaModelCombo.Text?.Trim() ?? "llama3.2", _settings.OllamaModel)
-            || !SameSetting(GetSelectedTag(LocalAIProviderCombo) ?? "Auto", _settings.LocalAIProvider)
-            || !SameSetting(FoundryLocalEndpointBox.Text?.Trim() ?? "", _settings.FoundryLocalEndpoint)
             || !SameSetting(string.IsNullOrWhiteSpace(foundryLocalModel) ? FoundryLocalService.DefaultModel : foundryLocalModel, _settings.FoundryLocalModel)
             || !SameSetting(GetEditableComboValue(OpenRouterModelCombo, "openrouter/free"), _settings.OpenRouterModel)
             || !SameSecret(OpenRouterKeyBox.Password, _settings.OpenRouterApiKey)
-            || !SameSetting(GetEditableComboValue(OrcaRouterModelCombo, "orcarouter/free"), _settings.OrcaRouterModel)
-            || !SameSecret(OrcaRouterKeyBox.Password, _settings.OrcaRouterApiKey)
             || !SameSecret(DoubaoKeyBox.Password, _settings.DoubaoApiKey)
             || !SameSetting(string.IsNullOrWhiteSpace(doubaoEndpoint) ? "https://ark.cn-beijing.volces.com/api/v3/responses" : doubaoEndpoint, _settings.DoubaoEndpoint)
             || !SameSetting(string.IsNullOrWhiteSpace(doubaoModel) ? "doubao-seed-translation-250915" : doubaoModel, _settings.DoubaoModel)
@@ -3015,14 +2880,9 @@ public sealed partial class SettingsPage : Page
             || (ocrOptions.Engine != OcrEngineType.PpOcrV6 && !SameSetting(ocrOptions.Model, _settings.OcrModel))
             || !SameSetting(ocrOptions.SystemPrompt, _settings.OcrSystemPrompt)
             || ocrOptions.EnableThinking != _settings.OcrEnableThinking
-            || PpOcrV6SettingsDifferFromSettings()
             || ProxyEnabledToggle.IsOn != _settings.ProxyEnabled
             || ProxyBypassLocalToggle.IsOn != _settings.ProxyBypassLocal
             || !SameSetting(ProxyUriBox.Text?.Trim() ?? "", _settings.ProxyUri)
-            || !SameSetting(GetSelectedTag(LayoutDetectionModeCombo) ?? "Auto", _settings.LayoutDetectionMode)
-            || !SameSetting(GetSelectedTag(VisionLayoutServiceCombo) ?? "gemini", _settings.VisionLayoutServiceId)
-            || !SameSetting(FormulaFontPatternBox.Text?.Trim() ?? "", _settings.FormulaFontPattern)
-            || !SameSetting(FormulaCharPatternBox.Text?.Trim() ?? "", _settings.FormulaCharPattern)
             || TranslationCacheToggle.IsOn != _settings.EnableTranslationCache
             || !SameSetting(CustomPromptBox.Text?.Trim() ?? "", _settings.LongDocCustomPrompt);
     }
@@ -3185,17 +3045,12 @@ public sealed partial class SettingsPage : Page
             OllamaModelCombo.Text = _settings.OllamaModel;
 
             // Foundry Local settings
-            FoundryLocalEndpointBox.Text = _settings.FoundryLocalEndpoint;
-            FoundryLocalModelBox.Text = _settings.FoundryLocalModel;
 
             // OpenRouter settings
             SetEditableComboValue(OpenRouterModelCombo, _settings.OpenRouterModel);
             OpenRouterKeyBox.Password = _settings.OpenRouterApiKey ?? string.Empty;
 
             // OrcaRouter settings
-            SetEditableComboValue(OrcaRouterModelCombo, _settings.OrcaRouterModel);
-            OrcaRouterKeyBox.Password = _settings.OrcaRouterApiKey ?? string.Empty;
-            ApplyOrcaRouterSignInLocalization(LocalizationService.Instance);
 
             // Doubao settings
             DoubaoKeyBox.Password = _settings.DoubaoApiKey ?? string.Empty;
@@ -3231,23 +3086,12 @@ public sealed partial class SettingsPage : Page
             // Restore test status indicators
             RestoreTestStatusIndicators();
 
-            InitializeLocalAIProviderCombo();
 
             // Probe Windows AI (Phi Silica) availability and attach to any
             // shared preparation task started from another surface.
-            InitializePhiSilicaPanel();
-            InitializeFoundryLocalPanel();
 
             // Same for the OpenVINO local NLLB provider: read cache status and
             // subscribe to status-change events for download progress.
-            InitializeOpenVinoPanel();
-        }
-
-        if (ShouldLoadSettingsTab(SettingsTabId.Plugins, deferLazyTabData))
-        {
-            UpdateBobPluginsSummary();
-            BuildInstalledBobPluginsConfigUI();
-            BuildTextActionsUI();
         }
 
         if (ShouldLoadSettingsTab(SettingsTabId.General, deferLazyTabData))
@@ -3343,7 +3187,6 @@ public sealed partial class SettingsPage : Page
                 : _settings.OcrModel;
             OcrSystemPromptBox.Text = _settings.OcrSystemPrompt;
             OcrEnableThinkingToggle.IsOn = _settings.OcrEnableThinking;
-            InitializePpOcrV6Settings();
             ApplyOcrEngineDefaultsIfNeeded(GetSelectedOcrEngine());
             UpdateOcrEngineUI();
 
@@ -3353,13 +3196,9 @@ public sealed partial class SettingsPage : Page
             ProxyBypassLocalToggle.IsOn = _settings.ProxyBypassLocal;
 
             // Layout Detection settings
-            SelectComboByTag(LayoutDetectionModeCombo, _settings.LayoutDetectionMode);
-            SelectComboByTag(VisionLayoutServiceCombo, _settings.VisionLayoutServiceId);
             UpdateLayoutDetectionUI();
 
             // Formula Detection
-            FormulaFontPatternBox.Text = _settings.FormulaFontPattern;
-            FormulaCharPatternBox.Text = _settings.FormulaCharPattern;
 
             // Translation Cache
             TranslationCacheToggle.IsOn = _settings.EnableTranslationCache;
@@ -3406,24 +3245,6 @@ public sealed partial class SettingsPage : Page
     {
         var statusMap = new Dictionary<string, TextBlock>
         {
-            ["deepl"] = DeepLStatusText,
-            ["openai"] = OpenAIStatusText,
-            ["deepseek"] = DeepSeekStatusText,
-            ["groq"] = GroqStatusText,
-            ["zhipu"] = ZhipuStatusText,
-            ["kimi"] = KimiStatusText,
-            ["github"] = GitHubModelsStatusText,
-            ["gemini"] = GeminiStatusText,
-            ["custom-openai"] = CustomOpenAIStatusText,
-            ["ollama"] = OllamaStatusText,
-            ["openrouter"] = OpenRouterStatusText,
-            ["orcarouter"] = OrcaRouterStatusText,
-            ["doubao"] = DoubaoStatusText,
-            ["caiyun"] = CaiyunStatusText,
-            ["niutrans"] = NiuTransStatusText,
-            ["volcano"] = VolcanoStatusText,
-            ["claude-code"] = ClaudeCodeStatusText,
-            ["codex"] = CodexStatusText
         };
 
         foreach (var (serviceId, indicator) in statusMap)
@@ -4154,9 +3975,7 @@ public sealed partial class SettingsPage : Page
             engine,
             OcrApiKeyBox.Password,
             OcrEndpointBox.Text,
-            engine == OcrEngineType.PpOcrV6
-                ? GetSelectedPpOcrV6ModelId()
-                : OcrModelBox.Text,
+            OcrModelBox.Text,
             OcrSystemPromptBox.Text,
             OcrEnableThinkingToggle.IsOn);
     }
@@ -4501,22 +4320,6 @@ public sealed partial class SettingsPage : Page
             }
         }
 
-        if (GetSelectedOcrEngine() == OcrEngineType.PpOcrV6)
-        {
-            var modelId = GetSelectedPpOcrV6ModelId();
-            if (await Task.Run(() => _ppOcrV6ModelStore.GetStateBySize(modelId)) != PpOcrV6ModelState.Installed)
-            {
-                var errorDialog = new ContentDialog
-                {
-                    Title = loc.GetString("PpOcrV6ModelUnavailableTitle"),
-                    Content = loc.GetString("PpOcrV6ModelUnavailableMessage", modelId),
-                    CloseButtonText = loc.GetString("OK"),
-                    XamlRoot = this.XamlRoot
-                };
-                await ShowDialogAsync(errorDialog);
-                return false;
-            }
-        }
 
         // Validate hotkey strings — an enabled hotkey that cannot be parsed
         // (or that has no modifier and is not a function key) would silently
@@ -4620,9 +4423,6 @@ public sealed partial class SettingsPage : Page
             ? "http://localhost:11434/v1/chat/completions"
             : ollamaEndpoint;
         _settings.OllamaModel = OllamaModelCombo.Text?.Trim() ?? "llama3.2";
-        _settings.LocalAIProvider = GetSelectedTag(LocalAIProviderCombo) ?? "Auto";
-        _settings.FoundryLocalEndpoint = FoundryLocalEndpointBox.Text?.Trim() ?? "";
-        var foundryLocalModel = FoundryLocalModelBox.Text?.Trim();
         _settings.FoundryLocalModel = string.IsNullOrWhiteSpace(foundryLocalModel)
             ? FoundryLocalService.DefaultModel
             : foundryLocalModel;
@@ -4638,7 +4438,6 @@ public sealed partial class SettingsPage : Page
         }
         _settings.OcrSystemPrompt = ocrOptions.SystemPrompt;
         _settings.OcrEnableThinking = ocrOptions.EnableThinking;
-        SavePpOcrV6Settings();
 
         // Save OpenRouter settings
         _settings.OpenRouterModel = GetEditableComboValue(OpenRouterModelCombo, "openrouter/free");
@@ -4646,8 +4445,6 @@ public sealed partial class SettingsPage : Page
         _settings.OpenRouterApiKey = string.IsNullOrWhiteSpace(openRouterKey) ? null : openRouterKey;
 
         // Save OrcaRouter settings
-        _settings.OrcaRouterModel = GetEditableComboValue(OrcaRouterModelCombo, "orcarouter/free");
-        var orcaRouterKey = OrcaRouterKeyBox.Password;
         _settings.OrcaRouterApiKey = string.IsNullOrWhiteSpace(orcaRouterKey) ? null : orcaRouterKey;
 
         // Save Doubao settings
@@ -4697,7 +4494,6 @@ public sealed partial class SettingsPage : Page
         SaveEncryptedMdxCredentials();
 
         // Save Bob plugin options from dynamic UI (secure ones go to the credential store)
-        SaveBobPluginOptions();
 
         // Save HTTP Proxy settings (already validated above)
         _settings.ProxyEnabled = ProxyEnabledToggle.IsOn;
@@ -4756,12 +4552,8 @@ public sealed partial class SettingsPage : Page
         _settings.FixedWindowEnabledServices = GetEnabledServicesFromCollection(_fixedWindowServices);
 
         // Layout Detection settings
-        _settings.LayoutDetectionMode = GetSelectedTag(LayoutDetectionModeCombo) ?? "Auto";
-        _settings.VisionLayoutServiceId = GetSelectedTag(VisionLayoutServiceCombo) ?? "gemini";
 
         // Formula Detection
-        _settings.FormulaFontPattern = FormulaFontPatternBox.Text?.Trim() ?? "";
-        _settings.FormulaCharPattern = FormulaCharPatternBox.Text?.Trim() ?? "";
 
         // Translation Cache
         _settings.EnableTranslationCache = TranslationCacheToggle.IsOn;
@@ -5138,13 +4930,6 @@ public sealed partial class SettingsPage : Page
         AdvancedOcrPanel.Visibility = isAdvanced ? Visibility.Visible : Visibility.Collapsed;
         OcrEndpointBox.PlaceholderText = OcrServiceOptions.GetDefaultEndpoint(engine);
         OcrModelBox.PlaceholderText = OcrServiceOptions.GetDefaultModel(engine);
-        PpOcrV6Panel.Visibility = engine == OcrEngineType.PpOcrV6
-            ? Visibility.Visible
-            : Visibility.Collapsed;
-        if (engine == OcrEngineType.PpOcrV6 && !_ppOcrV6UiLoading)
-        {
-            UpdatePpOcrV6ModelUi();
-        }
     }
 
     private void OnPasswordRevealButtonClick(object sender, RoutedEventArgs e)
@@ -5886,11 +5671,9 @@ public sealed partial class SettingsPage : Page
         {
             if (service is OrcaRouterService orcaRouter)
             {
-                var apiKey = OrcaRouterKeyBox.Password;
-                var model = GetEditableComboValue(OrcaRouterModelCombo, "orcarouter/free");
                 orcaRouter.Configure(string.IsNullOrWhiteSpace(apiKey) ? "" : apiKey, model: model);
             }
-        }, TestOrcaRouterButton, OrcaRouterStatusText);
+        });
     }
 
     /// <summary>
@@ -6185,33 +5968,16 @@ public sealed partial class SettingsPage : Page
         if (_hasRefreshedOrcaRouterModels) return;
 
         _hasRefreshedOrcaRouterModels = true;
-        await RefreshCatalogModelsAsync(
-            "orcarouter",
-            OrcaRouterModelCombo,
-            RefreshOrcaRouterModelsButton,
-            "orcarouter/free",
-            forceRefresh: false,
-            showErrorDialog: false,
-            FetchOrcaRouterModelsAsync);
     }
 
     private async void OnRefreshOrcaRouterModels(object sender, RoutedEventArgs e)
     {
-        await RefreshCatalogModelsAsync(
-            "orcarouter",
-            OrcaRouterModelCombo,
-            RefreshOrcaRouterModelsButton,
-            "orcarouter/free",
-            forceRefresh: true,
-            showErrorDialog: true,
-            FetchOrcaRouterModelsAsync);
     }
 
     private async Task<IReadOnlyList<ModelCatalogEntry>> FetchOrcaRouterModelsAsync()
     {
         using var handle = TranslationManagerService.Instance.AcquireHandle();
         var service = new OrcaRouterService(handle.Manager.SharedHttpClient);
-        service.Configure(OrcaRouterKeyBox.Password);
         return await service.FetchModelsAsync();
     }
 
@@ -6420,14 +6186,11 @@ public sealed partial class SettingsPage : Page
 
     private void UpdateLayoutDetectionUI()
     {
-        var mode = GetSelectedTag(LayoutDetectionModeCombo) ?? "Auto";
 
         // Show/hide ONNX model panel for Auto and OnnxLocal modes
         var showOnnx = mode is "Auto" or "OnnxLocal";
-        OnnxModelPanel.Visibility = showOnnx ? Visibility.Visible : Visibility.Collapsed;
 
         // Show/hide Vision LLM panel for VisionLLM mode
-        VisionLLMPanel.Visibility = mode == "VisionLLM" ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void UpdateOnnxModelStatus()
@@ -6440,18 +6203,10 @@ public sealed partial class SettingsPage : Page
 
         if (downloadService.IsReady)
         {
-            OnnxModelStatusText.Text = loc.GetString("LayoutDetection_Downloaded");
-            OnnxModelStatusIcon.Visibility = Visibility.Visible;
-            DownloadOnnxModelButton.Visibility = Visibility.Collapsed;
-            DeleteOnnxModelButton.Visibility = Visibility.Visible;
             _settings.OnnxModelDownloaded = true;
         }
         else
         {
-            OnnxModelStatusText.Text = loc.GetString("LayoutDetection_NotDownloaded");
-            OnnxModelStatusIcon.Visibility = Visibility.Collapsed;
-            DownloadOnnxModelButton.Visibility = Visibility.Visible;
-            DeleteOnnxModelButton.Visibility = Visibility.Collapsed;
             _settings.OnnxModelDownloaded = false;
         }
 
@@ -6463,9 +6218,6 @@ public sealed partial class SettingsPage : Page
 
     private async void OnDownloadOnnxModelClick(object sender, RoutedEventArgs e)
     {
-        DownloadOnnxModelButton.IsEnabled = false;
-        OnnxDownloadProgress.Visibility = Visibility.Visible;
-        OnnxDownloadProgressText.Visibility = Visibility.Visible;
 
         try
         {
@@ -6476,20 +6228,14 @@ public sealed partial class SettingsPage : Page
                 {
                     if (p.Percentage >= 0)
                     {
-                        OnnxDownloadProgress.IsIndeterminate = false;
-                        OnnxDownloadProgress.Value = p.Percentage;
                     }
                     else
                     {
-                        OnnxDownloadProgress.IsIndeterminate = true;
                     }
 
                     var stageName = p.Stage == "runtime" ? "ONNX Runtime" : "Model";
                     var mb = p.BytesDownloaded / (1024.0 * 1024.0);
                     var totalMb = p.TotalBytes > 0 ? p.TotalBytes / (1024.0 * 1024.0) : 0;
-                    OnnxDownloadProgressText.Text = totalMb > 0
-                        ? $"{stageName}: {mb:F1} / {totalMb:F1} MB"
-                        : $"{stageName}: {mb:F1} MB";
                 });
             });
 
@@ -6513,9 +6259,6 @@ public sealed partial class SettingsPage : Page
         }
         finally
         {
-            DownloadOnnxModelButton.IsEnabled = true;
-            OnnxDownloadProgress.Visibility = Visibility.Collapsed;
-            OnnxDownloadProgressText.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -6659,10 +6402,6 @@ public sealed partial class SettingsPage : Page
 
     private async void OnCjkFontDownloadClick(object sender, RoutedEventArgs e)
     {
-        CjkFontDownloadButton.IsEnabled = false;
-        CjkFontProgressBar.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-        CjkFontProgressBar.Value = 0;
-        CjkFontStatusText.Text = "Downloading...";
 
         try
         {
@@ -6671,8 +6410,6 @@ public sealed partial class SettingsPage : Page
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    CjkFontProgressBar.Value = p.Percentage;
-                    CjkFontStatusText.Text = $"Downloading {p.Stage}... {p.Percentage:F0}%";
                 });
             });
 
@@ -6690,16 +6427,12 @@ public sealed partial class SettingsPage : Page
                 await fontService.EnsureFontAsync(lang, progress);
             }
 
-            CjkFontStatusText.Text = $"CJK fonts downloaded ({fontService.GetTotalFontSizeBytes() / 1024 / 1024}MB).";
         }
         catch (Exception ex)
         {
-            CjkFontStatusText.Text = $"Download failed: {ex.Message}";
         }
         finally
         {
-            CjkFontDownloadButton.IsEnabled = true;
-            CjkFontProgressBar.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
         }
     }
 
@@ -6707,7 +6440,6 @@ public sealed partial class SettingsPage : Page
     {
         using var fontService = new FontDownloadService();
         fontService.DeleteAllFonts();
-        CjkFontStatusText.Text = "CJK fonts deleted.";
     }
 
     #endregion
